@@ -1,2 +1,2 @@
-public class IElevatorStrategy {
+public interface IElevatorStrategy {
 }
