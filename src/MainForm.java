@@ -1,19 +1,21 @@
 import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainForm {
 
     private JPanel mainPanel;
-    private JButton button1;
 
     public MainForm() {
 
     }
 
     public static void main(String[] args){
-        JFrame frame = new JFrame("MainForm");
-        frame.setContentPane(new MainForm().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+
+        EventLogger logger = new EventLogger("log.txt");
+        logger.log("Cheer! I am on board");
+        logger.saveLogs();
     }
 }
