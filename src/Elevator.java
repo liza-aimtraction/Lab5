@@ -1,2 +1,2 @@
-public class Elevator {
+public class Elevator extends Thread {
 }

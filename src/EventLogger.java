@@ -4,37 +4,44 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
-        --------------Sequence of use--------------
-
-        EventLogger logger = new EventLogger("log.txt");
-
-        logger.log("Dima entered elevator");
-        logger.log("Dima entered elevator");
-        logger.log("Dima entered elevator");
-
-        // for now noting is written to log file
-        logger.saveLogs();
-        // now you can`t log
-
-
-        logger.log("Dima is my boy"); // error
-
+/**
+ *
+ * @author Oikawa
+ * @param {boolean} alsoLogToConsole - set it manually to also log to console
+ *
+ * Poor design from me(Oikawa), sorry, but you must pass logger as parameter to all
+ * objects that need to log.
+ *
+ * --------------Sequence of use--------------
+ *  EventLogger logger = new EventLogger("log.txt");
+ *
+ *  logger.log("Dima entered elevator");
+ *  logger.log("Dima entered elevator");
+ *  logger.log("Dima entered elevator");
+ *
+ *  // for now nothing is written to log file
+ *  logger.saveLogs();
+ *  // now you can`t log
+ *
+ *  logger.log("Dima is my boy"); // error
+ *
  */
-
-
 public class EventLogger {
     private final String logFileRelPath;
     private FileWriter writer;
     private SimpleDateFormat formatter;
+    private boolean alsoLogToConsole = true;
 
-
+    /**
+     * @param logFileRelPath - relative path to file
+     * Create if don`t exist or clear file content if file exist
+     */
     public EventLogger(String logFileRelPath){
         this.logFileRelPath = logFileRelPath;
 
         try {
             // this object can`t be used to write into file     xDDDD <3 Java
-            new File(logFileRelPath).createNewFile(); // creates or opens new
+            new File(logFileRelPath).createNewFile();
             System.out.println("Log file creted");
 
             writer = new FileWriter(logFileRelPath);
@@ -47,18 +54,28 @@ public class EventLogger {
 
     }
 
+    /**
+     * @param logText - text to log without new line character in end of the string
+     */
     public synchronized void log(String logText){
         try {
             Date date = new Date(System.currentTimeMillis());
             String logTime = formatter.format(date);
-            writer.write(logTime + " : " + logText + "\n");
+            String fullLogText = logTime + " : " + logText + "\n";
+            writer.write(fullLogText);
+            if(alsoLogToConsole){
+                System.out.print(fullLogText);
+            }
         } catch (IOException e) {
             System.out.println("Error occurred while logging");
             e.printStackTrace();
         }
     }
 
-    // use before quit main
+    /**
+     * Saves all logs to file, closes writes, so can`t log after this call
+     * Use before quit main
+     */
     public void saveLogs(){
         try {
             writer.close();
