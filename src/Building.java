@@ -68,15 +68,10 @@ public class Building {
      */
     public void waitForAllThread(){
         while(!timerTask.isEnded()){
-            timerTask.mtx.lock();
-            ArrayList<Person> personsCopy = (ArrayList<Person>)persons.clone();
-            timerTask.mtx.unlock();
-            for(int i = 0; i < personsCopy.size(); ++i){
-                try{
-                    personsCopy.get(i).join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try{
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         personGeneratorTimer.cancel();
