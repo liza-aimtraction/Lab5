@@ -1,6 +1,7 @@
+package lab5;
+
 import java.util.ArrayList;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Oikawa
@@ -17,8 +18,8 @@ public class Building {
     private ArrayList<Person> persons;
     private Timer personGeneratorTimer;
     private PersonGenerator timerTask;
-    //PersonGenerator generator
-    //timer that adds peope to list
+    //lab5.PersonGenerator generator
+    //timer that adds people to list
     EventLogger logger;
 
     public Building(EventLogger logger, int generatePersonInterval, int limitOfGenerations){

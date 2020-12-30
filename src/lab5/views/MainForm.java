@@ -1,11 +1,10 @@
+package lab5.views;
+
+import lab5.Building;
+import lab5.EventLogger;
+import lab5.Person;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MainForm {
 

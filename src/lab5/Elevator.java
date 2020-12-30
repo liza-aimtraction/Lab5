@@ -1,16 +1,26 @@
-public class Elevator extends Thread {
+package lab5;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Oikawa, lexa
+ */
+public class Elevator extends Thread implements IElevator {
     /**
      * How many floors in building
      */
     private int floorsCount;
 
+    private List<Person> peopleInside;
+
     /**
      * Needs to UI for knowing where to draw elevator
-     *      set 0 if not moving
-     *      set 1 if moving ud
-     *      set -1 if moving down
      */
-    private int movingDirection;
+    public enum Direction {
+        UP, DOWN, IDLE
+    }
+    private Direction movingDirection;
 
     private int currentFloor;
 
@@ -25,16 +35,11 @@ public class Elevator extends Thread {
      */
     private int progressTo;
 
-    public void setMovingDirectionValue(int value) {
-        if(value == 0 || value == -1 || value == 1){
-            movingDirection = value;
-        }
-        else{
-            throw  new Error("ERROR: setMovingDirectionValue : value is " + value + ", but should be 1, -1 or 0");
-        }
+    public void setMovingDirection(Direction movingDirection) {
+        this.movingDirection = movingDirection;
     }
 
-    public int getMovingValue(){
+    public Direction getMovingDirection(){
         return movingDirection;
     }
 
@@ -49,4 +54,20 @@ public class Elevator extends Thread {
         }
     }
 
+    // For Strategy
+    @Override
+    public List<Integer> getPeopleDestinations() {
+        List<Integer> result = new ArrayList<>();
+        for (Person person : peopleInside)
+        {
+            // TODO: add person destination, need to add getter in Person class
+        }
+        return result;
+    }
+
+    // For Strategy
+    @Override
+    public int getCurrentFloor() {
+        return currentFloor;
+    }
 }

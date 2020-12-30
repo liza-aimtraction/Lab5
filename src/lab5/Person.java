@@ -1,3 +1,5 @@
+package lab5;
+
 /**
  * @author Oikawa
  *
@@ -35,4 +37,7 @@ public class Person extends Thread {
 
     }
 
+    public int getDestinationFloor() {
+        return destinationFloor;
+    }
 }
