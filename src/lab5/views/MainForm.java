@@ -24,15 +24,15 @@ public class MainForm {
         frame.setSize(700, 400);
         frame.setVisible(true);
 
-        EventLogger logger = new EventLogger("log.txt");
-        Building building = new Building(logger, 300, 10);
-        building.addPerson(new Person("ManuallyCreatedPerson1", logger));
-        building.addPerson(new Person("ManuallyCreatedPerson2", logger));
+        EventLogger.InitEventLogger("log.txt");
+        Building building = new Building(300, 10);
+        building.addPerson(new Person("ManuallyCreatedPerson1"));
+        building.addPerson(new Person("ManuallyCreatedPerson2"));
 
 
         building.startupBuildingThreads();
         building.waitForAllThread();
 
-        logger.saveLogs();
+        EventLogger.saveLogs();
     }
 }

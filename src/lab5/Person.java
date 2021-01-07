@@ -18,22 +18,19 @@ public class Person extends Thread {
     private int timeSpentInQueue;
     private int timeSpentInElevator;
 
-    private EventLogger logger;
-
-    public Person(String name, EventLogger logger){
+    public Person(String name){
         this.name = name;
-        this.logger = logger;
     }
 
     public void run() {
 
-        logger.log(name + " entered elevator");
+        EventLogger.log(name + " entered elevator");
         try{
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        logger.log(name + " left elevator");
+        EventLogger.log(name + " left elevator");
 
     }
 
