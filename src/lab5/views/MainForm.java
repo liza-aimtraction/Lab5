@@ -26,9 +26,8 @@ public class MainForm {
 
         EventLogger.InitEventLogger("log.txt");
         Building building = new Building(300, 10);
-        building.addPerson(new Person("ManuallyCreatedPerson1"));
-        building.addPerson(new Person("ManuallyCreatedPerson2"));
-
+        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5));
+        building.addPerson(new Person("ManuallyCreatedPerson2", 90, 0.7));
 
         building.startupBuildingThreads();
         building.waitForAllThread();

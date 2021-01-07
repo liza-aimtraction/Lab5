@@ -13,6 +13,12 @@ public class ElevatorEntrance {
         return _isOpen;
     }
 
+    void callElevator()
+    {
+        //Todo: get floor number somehow
+        //elevator.call();
+    }
+
     void open() {
         _isOpen = true;
     }

@@ -2,6 +2,7 @@ package lab5;
 
 import sun.awt.Mutex;
 
+import java.util.Random;
 import java.util.TimerTask;
 
 /**
@@ -16,6 +17,7 @@ public class PersonGenerator extends TimerTask{
     private int generatedPersons;
     private boolean isEnded;
     private int generatedPersonId = 1;
+    private Random random;
 
     /**
      * Mutex for generating persons and waiting for them
@@ -46,7 +48,9 @@ public class PersonGenerator extends TimerTask{
         if(generatedPersons < limitOfGenerations){
             generatedPersons++;
             String personName = "GeneratedPerson" + generatedPersonId++;
-            Person newPerson = new Person(personName);
+            double mass = 40 + random.nextDouble() * 60.0;
+            double area = 0.3 + 0.5 * random.nextDouble(); // in square meters
+            Person newPerson = new Person(personName, mass, area);
             newPerson.start();
             building.addPerson(newPerson);
             EventLogger.log("Generated person with name " + personName);
