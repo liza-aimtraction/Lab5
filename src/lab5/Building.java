@@ -93,15 +93,36 @@ public class Building {
         }
     }
 
-    public void addFloor(Floor floor){
-        floors.add(floor);
+    public void addFloor(){
+        int nextFloorNumber = getFloorCount();
+        floors.add(new Floor(nextFloorNumber));
     }
 
-    public void addElevator(Elevator elevator){
-        elevators.add(elevator);
+    public void addElevator(){
+        elevators.add(new Elevator());
+    }
+
+    public void addEntranceToFloor(int floorNumber, int elevatorNumber)
+    {
+        Floor floor = getFloor(floorNumber);
+        Elevator elevator = getElevator(elevatorNumber);
+        ElevatorEntrance entrance = new ElevatorEntrance(elevator);
+        floor.addEntrance(entrance);
     }
 
     public void addPerson(Person person){
         persons.add(person);
+    }
+
+    public int getFloorCount() {
+        return floors.size();
+    }
+
+    public Floor getFloor(int floorNumber) {
+        return floors.get(floorNumber);
+    }
+
+    public Elevator getElevator(int elevatorNumber) {
+        return elevators.get(elevatorNumber);
     }
 }

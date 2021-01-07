@@ -1,8 +1,6 @@
 package lab5.views;
 
-import lab5.Building;
-import lab5.EventLogger;
-import lab5.Person;
+import lab5.*;
 
 import javax.swing.*;
 
@@ -26,8 +24,19 @@ public class MainForm {
 
         EventLogger.InitEventLogger("log.txt");
         Building building = new Building(300, 10);
-        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5));
-        building.addPerson(new Person("ManuallyCreatedPerson2", 90, 0.7));
+        building.addFloor();
+        building.addFloor(); // let's create 3 floors
+        building.addFloor();
+        building.addElevator();
+        building.addElevator();
+        building.addEntranceToFloor(0, 0);
+        building.addEntranceToFloor(0, 1);
+        building.addEntranceToFloor(1, 0);
+        building.addEntranceToFloor(1, 1);
+        building.addEntranceToFloor(2, 0);
+        building.addEntranceToFloor(2, 1);
+        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0)));
+        building.addPerson(new Person("ManuallyCreatedPerson2", 90, 0.7, building.getFloor(2)));
 
         building.startupBuildingThreads();
         building.waitForAllThread();

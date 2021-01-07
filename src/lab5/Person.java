@@ -12,9 +12,9 @@ import java.util.Random;
  *  Handled by building object
  */
 public class Person extends Thread {
-    private String name;
-    private double mass;
-    private double area;
+    private final String name;
+    private final double mass;
+    private final double area;
     private int destinationFloor;
     private int timeSpentInQueue;
     private int timeSpentInElevator;
@@ -24,11 +24,15 @@ public class Person extends Thread {
     private Floor currentFloor;
     private ElevatorEntrance selectedEntrance;
 
-    public Person(String name, double mass, double area){
+    public Person(String name, double mass, double area, Floor floorSpawnedOn){
         this.name = name;
         this.mass = mass;
         this.area = area;
+        this.currentFloor = floorSpawnedOn;
+
         this.rand = new Random();
+        this.timeSpentInQueue = 0;
+        this.timeSpentInElevator = 0;
     }
 
     public void run() {
@@ -48,15 +52,24 @@ public class Person extends Thread {
     }
 
     private void personLifeCycle() throws InterruptedException {
+        EventLogger.log(name + " spawned at floor " + currentFloor.getNumber());
+
+        selectEntrance();
+
         while (true)
         {
             int time = waitSomeTime();
             timeSpentInQueue += time;
 
             boolean canEnter = checkIfCanEnterElevator();
-            if (canEnter)
-            {
+            if (canEnter) {
                 break;
+            }
+
+            // to prevent infinite waiting, we wait for no more than 15 seconds
+            if (timeSpentInQueue > 15000) {
+                EventLogger.log(name + " is tired of waiting, it left the queue :(");
+                return;
             }
         }
 
@@ -69,8 +82,13 @@ public class Person extends Thread {
         EventLogger.log(name + " left elevator");
     }
 
+    private void selectEntrance()
+    {
+        selectedEntrance = currentFloor.getEntranceWithShortestQueue();
+    }
+
     private boolean checkIfCanEnterElevator() {
-        EventLogger.log(name + "checked if elevator is open...");
+        EventLogger.log(name + " checked if elevator is open...");
         if (selectedEntrance.isOpen())
         {
             return true;

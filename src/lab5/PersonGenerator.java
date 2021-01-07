@@ -4,13 +4,14 @@ import sun.awt.Mutex;
 
 import java.util.Random;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 /**
  *    Timer for person generator
  *    Used in lab5.Building
  *    @author  Oikawa
  * */
-public class PersonGenerator extends TimerTask{
+public class PersonGenerator extends TimerTask {
 
     private Building building;
     private int limitOfGenerations;
@@ -29,6 +30,7 @@ public class PersonGenerator extends TimerTask{
         this.limitOfGenerations = limitOfGenerations;
         this.isEnded = false;
         this.mtx = new Mutex();
+        this.random = new Random();
     }
 
     /**
@@ -50,7 +52,16 @@ public class PersonGenerator extends TimerTask{
             String personName = "GeneratedPerson" + generatedPersonId++;
             double mass = 40 + random.nextDouble() * 60.0;
             double area = 0.3 + 0.5 * random.nextDouble(); // in square meters
-            Person newPerson = new Person(personName, mass, area);
+            int floorCount = building.getFloorCount();
+            int startingFloorNumber = random.nextInt(floorCount);
+            int destinationFloorNumber = random.nextInt(floorCount);
+            EventLogger.log("mass = " + mass);
+            EventLogger.log("area = " + area);
+            EventLogger.log("floorCount = " + floorCount);
+            EventLogger.log("startingFloorNumber = " + startingFloorNumber);
+            EventLogger.log("destinationFloorNumber = " + destinationFloorNumber);
+            Floor startingFloor = building.getFloor(startingFloorNumber);
+            Person newPerson = new Person(personName, mass, area, startingFloor);
             newPerson.start();
             building.addPerson(newPerson);
             EventLogger.log("Generated person with name " + personName);
