@@ -1,11 +1,12 @@
+package lab5;
+
 import sun.awt.Mutex;
 
-import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
  *    Timer for person generator
- *    Used in Building
+ *    Used in lab5.Building
  *    @author  Oikawa
  * */
 public class PersonGenerator extends TimerTask{
@@ -32,7 +33,7 @@ public class PersonGenerator extends TimerTask{
 
     /**
      *  Manually set when limitOfGenerations reached
-     *  When set to true, Building object close timer
+     *  When set to true, lab5.Building object close timer
      */
     public boolean isEnded(){
         return isEnded;

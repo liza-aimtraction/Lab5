@@ -1,3 +1,5 @@
+package lab5;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Date;
  * objects that need to log.
  *
  * --------------Sequence of use--------------
- *  EventLogger logger = new EventLogger("log.txt");
+ *  lab5.EventLogger logger = new lab5.EventLogger("log.txt");
  *
  *  logger.log("Dima entered elevator");
  *  logger.log("Dima entered elevator");
