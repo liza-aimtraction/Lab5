@@ -22,8 +22,7 @@ public class Building {
     //timer that adds people to list
     EventLogger logger;
 
-    public Building(EventLogger logger, int generatePersonInterval, int limitOfGenerations){
-        this.logger = logger;
+    public Building(int generatePersonInterval, int limitOfGenerations){
         floors = new ArrayList<Floor>();
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
@@ -58,7 +57,7 @@ public class Building {
      *  @param limitOfGenerations represents how many persons to generate
      */
     public void setupPersonGenerator(int generatePersonInterval, int limitOfGenerations){
-        timerTask = new PersonGenerator(this, logger, limitOfGenerations);
+        timerTask = new PersonGenerator(this, limitOfGenerations);
         personGeneratorTimer = new Timer();
         personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
     }

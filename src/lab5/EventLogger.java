@@ -29,26 +29,26 @@ import java.util.Date;
  *
  */
 public class EventLogger {
-    private final String logFileRelPath;
-    private FileWriter writer;
-    private SimpleDateFormat formatter;
-    private boolean alsoLogToConsole = true;
+    private static  String logFileRelPath;
+    private static FileWriter writer;
+    private static SimpleDateFormat formatter;
+    private static boolean alsoLogToConsole = true;
 
     /**
      * @param logFileRelPath - relative path to file
      * Create if don`t exist or clear file content if file exist
      */
-    public EventLogger(String logFileRelPath){
-        this.logFileRelPath = logFileRelPath;
+    public static void InitEventLogger(String logFileRelPath){
+        EventLogger.logFileRelPath = logFileRelPath;
 
         try {
             // this object can`t be used to write into file     xDDDD <3 Java
             new File(logFileRelPath).createNewFile();
             System.out.println("Log file creted");
 
-            writer = new FileWriter(logFileRelPath);
+            EventLogger.writer = new FileWriter(logFileRelPath);
 
-            formatter= new SimpleDateFormat("HH:mm:ss:SS");
+            EventLogger.formatter= new SimpleDateFormat("HH:mm:ss:SS");
         } catch (IOException e) {
             System.out.println("Error occurred while creating file");
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class EventLogger {
     /**
      * @param logText - text to log without new line character in end of the string
      */
-    public synchronized void log(String logText){
+    public static synchronized void log(String logText){
         try {
             Date date = new Date(System.currentTimeMillis());
             String logTime = formatter.format(date);
@@ -78,7 +78,7 @@ public class EventLogger {
      * Saves all logs to file, closes writes, so can`t log after this call
      * Use before quit main
      */
-    public void saveLogs(){
+    public static void saveLogs(){
         try {
             writer.close();
             System.out.println("Logs saved to file " + logFileRelPath);

@@ -12,7 +12,6 @@ import java.util.TimerTask;
 public class PersonGenerator extends TimerTask{
 
     private Building building;
-    private EventLogger logger;
     private int limitOfGenerations;
     private int generatedPersons;
     private boolean isEnded;
@@ -23,9 +22,8 @@ public class PersonGenerator extends TimerTask{
      */
     public Mutex mtx;
 
-    public PersonGenerator(Building building, EventLogger logger, int limitOfGenerations){
+    public PersonGenerator(Building building, int limitOfGenerations){
         this.building = building;
-        this.logger = logger;
         this.limitOfGenerations = limitOfGenerations;
         this.isEnded = false;
         this.mtx = new Mutex();
@@ -48,10 +46,10 @@ public class PersonGenerator extends TimerTask{
         if(generatedPersons < limitOfGenerations){
             generatedPersons++;
             String personName = "GeneratedPerson" + generatedPersonId++;
-            Person newPerson = new Person(personName, logger);
+            Person newPerson = new Person(personName);
             newPerson.start();
             building.addPerson(newPerson);
-            logger.log("Generated person with name " + personName);
+            EventLogger.log("Generated person with name " + personName);
         }
         else{
             isEnded = true;
