@@ -49,8 +49,12 @@ public class Elevator extends Thread implements IElevator {
 
     private String logName;
 
-    public Elevator(String logName, IElevatorStrategy strategy){
+    public Elevator(String logName, IElevatorStrategy strategy, int startingFloor){
+        this.logName = logName;
         this.elevatorStrategy = strategy;
+        this.peopleInside = new ArrayList<Person>();
+        this.callQueue = new ArrayList<Integer>();
+        this.currentFloor = startingFloor;
     }
 
     public void setMovingDirection(Direction movingDirection) {
@@ -82,15 +86,19 @@ public class Elevator extends Thread implements IElevator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            boolean newCommand = false;
+
             if(currentCommand == null){
-                newCommand = true;
                 currentCommand = elevatorStrategy.CalculateNextMove(this);
             }
 
-            if(currentCommand.floorToMove == currentFloor && !newCommand) {
-                EventLogger.log(logName + " opened doors at floor " + currentFloor);
-                // call open in elevatorEntrance
+            if(currentCommand.floorToMove == currentFloor) {
+                if(currentCommand.triggerSource != ElevatorStrategyCommand.TriggerSource.NONE){
+                    EventLogger.log(logName + " opened doors at floor " + currentFloor);
+                    // TODO:call open in elevatorEntrance
+                    if(currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.OUTSIDE){
+                        callQueue.remove(0);
+                    }
+                }
                 currentCommand = null;
             }
             else if(currentCommand.floorToMove != currentFloor){
@@ -101,6 +109,7 @@ public class Elevator extends Thread implements IElevator {
 
                 simulateMovementToFloor();
             }
+
 
 
         }

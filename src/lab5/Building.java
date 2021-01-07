@@ -22,11 +22,10 @@ public class Building {
     //timer that adds people to list
     EventLogger logger;
 
-    public Building(int generatePersonInterval, int limitOfGenerations){
+    public Building(){
         floors = new ArrayList<Floor>();
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
-        setupPersonGenerator(generatePersonInterval, limitOfGenerations);
     }
 
     /**
@@ -98,8 +97,8 @@ public class Building {
         floors.add(new Floor(nextFloorNumber));
     }
 
-    public void addElevator(){
-        elevators.add(new Elevator());
+    public void addElevator(String elevatorLogName, IElevatorStrategy elevatorStrategy, int startingFloor){
+        elevators.add(new Elevator(elevatorLogName, elevatorStrategy, startingFloor));
     }
 
     public void addEntranceToFloor(int floorNumber, int elevatorNumber)
