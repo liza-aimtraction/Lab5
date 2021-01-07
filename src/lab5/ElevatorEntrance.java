@@ -1,5 +1,7 @@
 package lab5;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Queue;
 
 public class ElevatorEntrance {
@@ -19,10 +21,7 @@ public class ElevatorEntrance {
         _isOpen = false;
     }
 
-    void goNextPersonInside() {
-    }
-
     int getQueueSize() {
-
+        return peopleInQueue.size();
     }
 }
