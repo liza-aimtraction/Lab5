@@ -28,7 +28,6 @@ public class Building {
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
         setupPersonGenerator(generatePersonInterval, limitOfGenerations);
-
     }
 
     /**

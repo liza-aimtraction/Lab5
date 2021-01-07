@@ -15,7 +15,6 @@ public class MainForm {
     private JTextArea elevatorList;
     private JTextField spawnRate;
 
-
     public static void main(String[] args){
 
         JFrame frame = new JFrame("MainForm");
