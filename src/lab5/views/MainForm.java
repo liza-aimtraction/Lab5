@@ -14,17 +14,13 @@ public class MainForm {
     private JTextArea elevatorList;
     private JTextField spawnRate;
 
-    public static void main(String[] args){
+    private static Building building;
 
-        JFrame frame = new JFrame("MainForm");
-        frame.setContentPane(new MainForm().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setSize(700, 400);
-        frame.setVisible(true);
-
-        EventLogger.InitEventLogger("log.txt");
-        Building building = new Building();
+    /**
+     * method will be deleted in future.
+     */
+    public static void initBuilding(){
+        MainForm.building = new Building();
         building.addFloor();
         building.addFloor(); // let's create 3 floors
         building.addFloor();
@@ -41,6 +37,23 @@ public class MainForm {
         building.setupPersonGenerator(300, 10);
         building.startupBuildingThreads();
         building.waitForAllThread();
+    }
+
+    private static void buildAndDisplayUI(){
+        JFrame frame = new JFrame("MainForm");
+        frame.setContentPane(new MainForm().mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setSize(700, 400);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args){
+        EventLogger.InitEventLogger("log.txt");
+
+        buildAndDisplayUI();
+
+        initBuilding();
 
         EventLogger.saveLogs();
     }
