@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -16,12 +19,14 @@ public class EventLogger {
     private static FileWriter writer;
     private static SimpleDateFormat formatter;
     private static boolean alsoLogToConsole = true;
+    private static HashMap<String, ArrayList<String>> threadLogs;
 
     /**
      * @param logFileRelPath - relative path to file
      * Create if don`t exist or clear file content if file exist
      */
     public static void InitEventLogger(String logFileRelPath){
+        threadLogs = new HashMap<String, ArrayList<String>>();
         EventLogger.logFileRelPath = logFileRelPath;
 
         try {
@@ -42,12 +47,16 @@ public class EventLogger {
     /**
      * @param logText - text to log without new line character in end of the string
      */
-    public static synchronized void log(String logText){
+    public static synchronized void log(String logText, String threadName){
         try {
             Date date = new Date(System.currentTimeMillis());
             String logTime = formatter.format(date);
             String fullLogText = logTime + " : " + logText + "\n";
             writer.write(fullLogText);
+            if(!threadLogs.containsKey(threadName)){
+                threadLogs.put(threadName, new ArrayList<>());
+            }
+            threadLogs.get(threadName).add(fullLogText);
             if(alsoLogToConsole){
                 System.out.print(fullLogText);
             }
@@ -63,6 +72,15 @@ public class EventLogger {
      */
     public static void saveLogs(){
         try {
+            for(Map.Entry<String, ArrayList<String>> entry : threadLogs.entrySet()) {
+                String key = entry.getKey();
+                ArrayList<String> value = entry.getValue();
+
+                writer.write("\n\n\n\n\n-----------------------------------" + key + "-----------------------------------\n");
+                for (String log: value) {
+                    writer.write(log);
+                }
+            }
             writer.close();
             System.out.println("Logs saved to file " + logFileRelPath);
         } catch (IOException e) {

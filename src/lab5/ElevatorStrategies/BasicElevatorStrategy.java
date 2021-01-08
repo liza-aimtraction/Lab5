@@ -14,7 +14,7 @@ public class BasicElevatorStrategy implements IElevatorStrategy {
         if(peopleInsideElevator.size() == 0){
             ArrayList<Integer> callQueue = elevator.getCallQueue();
             if(callQueue.size() == 0){
-                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloor());
+                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloor().getNumber());
             }
             else{
                 return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, callQueue.get(0));

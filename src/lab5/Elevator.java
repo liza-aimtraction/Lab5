@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.log;
 
 /**
  * @author Oikawa, lexa
  */
 public class Elevator extends Thread implements IElevator {
-    /**
-     * How many floors in building
-     */
-    private int floorsCount;
+
+    private Building building;
 
     private double maxMass;
 
@@ -28,11 +27,11 @@ public class Elevator extends Thread implements IElevator {
      * Needs to UI for knowing where to draw elevator
      */
     public enum Direction {
-        UP, DOWN
+        UP, DOWN, IDLE
     }
     private Direction movingDirection;
 
-    private int currentFloor;
+    private Floor currentFloor;
 
     private ElevatorStrategyCommand currentCommand = null;
 
@@ -47,12 +46,21 @@ public class Elevator extends Thread implements IElevator {
      */
     private int progressTo;
 
-    public Elevator(String logName, IElevatorStrategy strategy, int startingFloor){
+    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building){
         setName(logName); // thread name
+        EventLogger.log(getName() + " spawned at floor " + startingFloor.getNumber(), getName());
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
         this.callQueue = new ArrayList<Integer>();
         this.currentFloor = startingFloor;
+        this.building = building;
+    }
+
+    public void call(int toFloor){
+        if(!callQueue.contains(toFloor)){
+            EventLogger.log(getName() +" called at floor: " + toFloor, getName());
+            callQueue.add(toFloor);
+        }
     }
 
     public void setMovingDirection(Direction movingDirection) {
@@ -63,10 +71,11 @@ public class Elevator extends Thread implements IElevator {
         return movingDirection;
     }
 
-    public void changeFloor(int floorToChange){
-        if(floorToChange == currentFloor - 1 || floorToChange == currentFloor + 1){
+    public void changeFloor(Floor floorToChange){
+        if(floorToChange.getNumber() == currentFloor.getNumber() - 1 || floorToChange.getNumber() == currentFloor.getNumber() + 1){
             currentFloor = floorToChange;
             progressTo = 0;
+            movingDirection = Direction.IDLE;
         }
         else{
             throw  new Error("ERROR: changeFloor : " + currentFloor + " --> " + floorToChange + ". Diff is not 1!");
@@ -78,42 +87,79 @@ public class Elevator extends Thread implements IElevator {
      */
     @Override
     public void run() {
+        try{
+            elevatorLifeCycle();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void elevatorLifeCycle() throws InterruptedException {
         while(true){
-            try{
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            Thread.sleep(100);
 
             if(currentCommand == null){
                 currentCommand = elevatorStrategy.CalculateNextMove(this);
             }
 
-            if(currentCommand.floorToMove == currentFloor) {
-                if(currentCommand.triggerSource != ElevatorStrategyCommand.TriggerSource.NONE){
-                    EventLogger.log(getName() + " opened doors at floor " + currentFloor);
-                    // TODO:call open in elevatorEntrance
-                    if(currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.OUTSIDE){
-                        callQueue.remove(0);
-                    }
-                }
-                currentCommand = null;
-            }
-            else if(currentCommand.floorToMove != currentFloor){
-                movingDirection =
-                        currentCommand.floorToMove > currentFloor
-                        ? Direction.DOWN
-                        : Direction.UP;
+            if(arrivedAtCommandFloor()){
+                OpenDoors();
+                Thread.sleep(2000);
+                CloseDoors();
 
+            }
+            else if(notAtCommandFloor()){
                 simulateMovementToFloor();
             }
-
-
-
+            // else no work to do
         }
     }
 
+    private void OpenDoors(){
+        EventLogger.log(getName() + " opened doors at floor " + currentFloor.getNumber(), getName());
+        currentFloor.getElevatorEntranceByElevator(this).open();
+
+        if(currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.OUTSIDE){
+            if(callQueue.get(0) != currentFloor.getNumber()){
+                throw new Error("Incorrect logic in Elevator Call Queue");
+            }
+            callQueue.remove(0);
+        }
+        currentCommand = null;
+    }
+
+    private void CloseDoors(){
+        EventLogger.log(getName() + " closed doors at floor " + currentFloor.getNumber(), getName());
+        currentFloor.getElevatorEntranceByElevator(this).close();
+        if(!callQueue.isEmpty()){
+            if(callQueue.get(0) == currentFloor.getNumber()){
+                callQueue.remove(0);
+            }
+        }
+    }
+
+
+
+    private boolean arrivedAtCommandFloor(){
+        if(currentCommand.floorToMove == currentFloor.getNumber()) {
+            if (currentCommand.triggerSource != ElevatorStrategyCommand.TriggerSource.NONE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean notAtCommandFloor(){
+        return currentCommand.floorToMove != currentFloor.getNumber();
+    }
+
     private void simulateMovementToFloor(){
+        movingDirection =
+                currentCommand.floorToMove > currentFloor.getNumber()
+                        ? Direction.UP
+                        : Direction.DOWN;
+
         int iterations = 10;
         for(int i = 0; i < iterations; i++){
             try{
@@ -123,15 +169,21 @@ public class Elevator extends Thread implements IElevator {
             }
             progressTo += 1.0 / (double)iterations;
         }
-        int floorDelta = movingDirection == Direction.DOWN ? -1 : 1;
-        changeFloor(currentFloor + floorDelta);
+        if(movingDirection == Direction.DOWN){
+            changeFloor(building.getLowerFloor(currentFloor));
+        }
+        else if(movingDirection == Direction.UP){
+            changeFloor(building.getUpperFloor(currentFloor));
+        }
     }
 
     public void addPerson(Person person){
+        EventLogger.log(getName() + " added " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
         peopleInside.add(person);
     }
 
     public void removePerson(Person person){
+        EventLogger.log(getName() + " removed " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
         peopleInside.remove(person);
     }
 
@@ -147,7 +199,7 @@ public class Elevator extends Thread implements IElevator {
 
     // For Strategy
     @Override
-    public int getCurrentFloor() {
+    public Floor getCurrentFloor() {
         return currentFloor;
     }
 }

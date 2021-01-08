@@ -58,7 +58,7 @@ public class PersonGenerator extends TimerTask {
                 destinationFloorNumber = random.nextInt(floorCount);
             }
             Floor startingFloor = building.getFloor(startingFloorNumber);
-            Person newPerson = new Person(personName, mass, area, startingFloor, destinationFloorNumber);
+            Person newPerson = new Person(personName, mass, area, startingFloor, destinationFloorNumber, building);
             newPerson.start();
             building.addPerson(newPerson);
         }

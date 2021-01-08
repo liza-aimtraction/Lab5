@@ -34,6 +34,15 @@ public class Floor {
         return shortest;
     }
 
+    public ElevatorEntrance getElevatorEntranceByElevator(Elevator elevator){
+        for ( ElevatorEntrance entrance : entrances ) {
+            if(entrance.getElevator() == elevator){
+                return entrance;
+            }
+        }
+        throw new Error("No entrance with this elevator.");
+    }
+
     public int getNumber() {
         return floorNumber;
     }

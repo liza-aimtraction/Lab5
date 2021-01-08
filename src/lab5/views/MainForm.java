@@ -22,12 +22,10 @@ public class MainForm {
     public static void initBuilding(){
         MainForm.building = new Building();
         building.createFloors(3);
-        building.createElevator(new BasicElevatorStrategy(), 2);
-        building.createElevator(new BasicElevatorStrategy(),0);
+        building.createElevator(new BasicElevatorStrategy(), building.getFloor(2));
         building.createEntrances();
-        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1));
-        building.addPerson(new Person("ManuallyCreatedPerson2", 90, 0.7, building.getFloor(2), 1));
-        building.setupPersonGenerator(300, 10);
+        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
+        building.setupPersonGenerator(300, 0);
         building.startupBuildingThreads();
         building.waitForAllThread();
     }

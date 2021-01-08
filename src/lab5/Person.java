@@ -18,24 +18,27 @@ public class Person extends Thread {
     private int timeSpentInQueue;
     private int timeSpentInElevator;
     private Random rand;
+    private Building building;
 
     // for algorithm
     private Floor currentFloor;
     private ElevatorEntrance selectedEntrance;
+    private Elevator enteredElevator;
 
-    public Person(String name, double mass, double area, Floor floorSpawnedOn, int destinationFloor){
+    public Person(String name, double mass, double area, Floor floorSpawnedOn, int destinationFloor, Building building){
         setName(name); // thread name
         this.mass = mass;
         this.area = area;
         this.currentFloor = floorSpawnedOn;
         this.destinationFloor = destinationFloor;
+        this.building = building;
 
         this.rand = new Random();
         this.timeSpentInQueue = 0;
         this.timeSpentInElevator = 0;
 
         EventLogger.log("Created person '" + name +
-                "'(mass = " + mass + ", area = " + area + ", floors: " + floorSpawnedOn.getNumber() + " -> " + destinationFloor + ")");
+                "'(mass = " + mass + ", area = " + area + ", floors: " + floorSpawnedOn.getNumber() + " -> " + destinationFloor + ")", getName());
     }
 
     public void run() {
@@ -55,43 +58,80 @@ public class Person extends Thread {
     }
 
     private void personLifeCycle() throws InterruptedException {
-        EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber());
+        EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber(), getName());
 
         selectEntrance();
 
         while (true)
         {
+            if(checkIfCanCallElevator()){
+                callElevator();
+            }
             int time = waitSomeTime();
             timeSpentInQueue += time;
 
             boolean canEnter = checkIfCanEnterElevator();
             if (canEnter) {
+                enterElevator();
                 break;
             }
 
             // to prevent infinite waiting, we wait for no more than 15 seconds
             if (timeSpentInQueue > 15000) {
-                EventLogger.log(getName() + " is tired of waiting, it left the queue :(");
+                EventLogger.log(getName() + " is tired of waiting, it left the queue :(", getName());
                 return;
             }
         }
+        // wait for elevator to reach desired floor
+        while (true) {
+            int timeInElevator = waitSomeTime();
+            timeSpentInElevator += timeInElevator;
 
-        EventLogger.log(getName() + " entered elevator");
-        // TODO: some method which allows to add people in elevator
-
-        // TODO: another cycle which checks if elevator is at destination
-
-        // TODO: some method which allows to remove people from elevator
-        EventLogger.log(getName() + " left elevator");
+            if(isElevatorAtDesiredFloor()){
+                leaveElevator();
+                break;
+            }
+        }
     }
 
     private synchronized void  selectEntrance()
     {
         selectedEntrance = currentFloor.getEntranceWithShortestQueue();
+        selectedEntrance.addPersonToQueue(this);
+        EventLogger.log(getName() + " entered elevator entrance with " + selectedEntrance.getElevator().getName(), getName());
     }
 
+    private void callElevator(){
+        //EventLogger.log(getName() + " called elevator at floor" + currentFloor.getNumber(), getName());
+        selectedEntrance.callElevator(this.currentFloor.getNumber());
+    }
+
+    private void enterElevator(){
+        EventLogger.log(getName() + " entered elevator", getName());
+        enteredElevator = selectedEntrance.getElevator();
+        selectedEntrance.removePersonFromQueue(this);
+        selectedEntrance = null;
+        currentFloor = null;
+        enteredElevator.addPerson(this);
+    }
+
+    private void leaveElevator(){
+        currentFloor = enteredElevator.getCurrentFloor();
+        enteredElevator.removePerson(this);
+        EventLogger.log(getName() + " left elevator at floor " + currentFloor.getNumber(), getName());
+    }
+
+    private boolean checkIfCanCallElevator(){
+        return selectedEntrance.getPersonPositionInQueue(this) == 0;
+    }
+
+    private boolean isElevatorAtDesiredFloor(){
+        return building.getFloor(destinationFloor).getElevatorEntranceByElevator(enteredElevator)._isOpen;
+    }
+
+
     private boolean checkIfCanEnterElevator() {
-        EventLogger.log(getName() + " checked if elevator is open...");
+        //EventLogger.log(getName() + " checked if elevator is open...", getName());
         if (selectedEntrance.isOpen())
         {
             return true;

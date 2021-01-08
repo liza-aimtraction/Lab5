@@ -90,12 +90,12 @@ public class Building {
         }
     }
 
-    public void createElevator(IElevatorStrategy elevatorStrategy, int startingFloor){
-        if(startingFloor < 0 || startingFloor >= floors.size()){
+    public void createElevator(IElevatorStrategy elevatorStrategy, Floor startingFloor){
+        if(startingFloor.getNumber() < 0 || startingFloor.getNumber() >= floors.size()){
             throw new Error("createElevator: Invalid floor passed");
         }
         else{
-            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor));
+            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this));
         }
 
     }
@@ -126,5 +126,19 @@ public class Building {
 
     public Elevator getElevator(int elevatorNumber) {
         return elevators.get(elevatorNumber);
+    }
+
+    public Floor getUpperFloor(Floor floor){
+        if(floor.getNumber() == getFloorCount() - 2){
+            throw new Error("There is no upper floor");
+        }
+        return floors.get(floor.getNumber() + 1);
+    }
+
+    public Floor getLowerFloor(Floor floor){
+        if(floor.getNumber() == 0){
+            throw new Error("There is no lower floor");
+        }
+        return floors.get(floor.getNumber() - 1);
     }
 }
