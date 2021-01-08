@@ -10,23 +10,6 @@ import java.util.Date;
  *
  * @author Oikawa
  * @param {boolean} alsoLogToConsole - set it manually to also log to console
- *
- * Poor design from me(Oikawa), sorry, but you must pass logger as parameter to all
- * objects that need to log.
- *
- * --------------Sequence of use--------------
- *  lab5.EventLogger logger = new lab5.EventLogger("log.txt");
- *
- *  logger.log("Dima entered elevator");
- *  logger.log("Dima entered elevator");
- *  logger.log("Dima entered elevator");
- *
- *  // for now nothing is written to log file
- *  logger.saveLogs();
- *  // now you can`t log
- *
- *  logger.log("Dima is my boy"); // error
- *
  */
 public class EventLogger {
     private static  String logFileRelPath;
