@@ -17,7 +17,6 @@ public class PersonGenerator extends TimerTask {
     private int limitOfGenerations;
     private int generatedPersons;
     private boolean isEnded;
-    private int generatedPersonId = 1;
     private Random random;
 
     /**
@@ -28,6 +27,7 @@ public class PersonGenerator extends TimerTask {
     public PersonGenerator(Building building, int limitOfGenerations){
         this.building = building;
         this.limitOfGenerations = limitOfGenerations;
+        this.generatedPersons = 0;
         this.isEnded = false;
         this.mtx = new Mutex();
         this.random = new Random();
@@ -48,23 +48,19 @@ public class PersonGenerator extends TimerTask {
     public void run() {
         mtx.lock();
         if(generatedPersons < limitOfGenerations){
-            generatedPersons++;
-            String personName = "GeneratedPerson" + generatedPersonId++;
+            String personName = "GeneratedPerson" + generatedPersons++;
             double mass = 40 + random.nextDouble() * 60.0;
             double area = 0.3 + 0.5 * random.nextDouble(); // in square meters
             int floorCount = building.getFloorCount();
             int startingFloorNumber = random.nextInt(floorCount);
             int destinationFloorNumber = random.nextInt(floorCount);
-            EventLogger.log("mass = " + mass);
-            EventLogger.log("area = " + area);
-            EventLogger.log("floorCount = " + floorCount);
-            EventLogger.log("startingFloorNumber = " + startingFloorNumber);
-            EventLogger.log("destinationFloorNumber = " + destinationFloorNumber);
+            while(startingFloorNumber == destinationFloorNumber){
+                destinationFloorNumber = random.nextInt(floorCount);
+            }
             Floor startingFloor = building.getFloor(startingFloorNumber);
-            Person newPerson = new Person(personName, mass, area, startingFloor);
+            Person newPerson = new Person(personName, mass, area, startingFloor, destinationFloorNumber);
             newPerson.start();
             building.addPerson(newPerson);
-            EventLogger.log("Generated person with name " + personName);
         }
         else{
             isEnded = true;

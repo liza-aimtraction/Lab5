@@ -12,7 +12,6 @@ import java.util.Random;
  *  Handled by building object
  */
 public class Person extends Thread {
-    private final String name;
     private final double mass;
     private final double area;
     private int destinationFloor;
@@ -24,15 +23,19 @@ public class Person extends Thread {
     private Floor currentFloor;
     private ElevatorEntrance selectedEntrance;
 
-    public Person(String name, double mass, double area, Floor floorSpawnedOn){
-        this.name = name;
+    public Person(String name, double mass, double area, Floor floorSpawnedOn, int destinationFloor){
+        setName(name); // thread name
         this.mass = mass;
         this.area = area;
         this.currentFloor = floorSpawnedOn;
+        this.destinationFloor = destinationFloor;
 
         this.rand = new Random();
         this.timeSpentInQueue = 0;
         this.timeSpentInElevator = 0;
+
+        EventLogger.log("Created person '" + name +
+                "'(mass = " + mass + ", area = " + area + ", floors: " + floorSpawnedOn.getNumber() + " -> " + destinationFloor + ")");
     }
 
     public void run() {
@@ -52,7 +55,7 @@ public class Person extends Thread {
     }
 
     private void personLifeCycle() throws InterruptedException {
-        EventLogger.log(name + " spawned at floor " + currentFloor.getNumber());
+        EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber());
 
         selectEntrance();
 
@@ -68,27 +71,27 @@ public class Person extends Thread {
 
             // to prevent infinite waiting, we wait for no more than 15 seconds
             if (timeSpentInQueue > 15000) {
-                EventLogger.log(name + " is tired of waiting, it left the queue :(");
+                EventLogger.log(getName() + " is tired of waiting, it left the queue :(");
                 return;
             }
         }
 
-        EventLogger.log(name + " entered elevator");
+        EventLogger.log(getName() + " entered elevator");
         // TODO: some method which allows to add people in elevator
 
         // TODO: another cycle which checks if elevator is at destination
 
         // TODO: some method which allows to remove people from elevator
-        EventLogger.log(name + " left elevator");
+        EventLogger.log(getName() + " left elevator");
     }
 
-    private void selectEntrance()
+    private synchronized void  selectEntrance()
     {
         selectedEntrance = currentFloor.getEntranceWithShortestQueue();
     }
 
     private boolean checkIfCanEnterElevator() {
-        EventLogger.log(name + " checked if elevator is open...");
+        EventLogger.log(getName() + " checked if elevator is open...");
         if (selectedEntrance.isOpen())
         {
             return true;
@@ -98,9 +101,5 @@ public class Person extends Thread {
 
     public int getDestinationFloor() {
         return destinationFloor;
-    }
-
-    public void setDestinationFloor(int value) {
-        destinationFloor = value;
     }
 }

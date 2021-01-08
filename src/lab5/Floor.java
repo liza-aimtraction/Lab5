@@ -28,7 +28,7 @@ public class Floor {
             if (curQueueSize < shortestQueueSize)
             {
                 shortest = entrance;
-                curQueueSize = shortestQueueSize;
+                shortestQueueSize = curQueueSize;
             }
         }
         return shortest;

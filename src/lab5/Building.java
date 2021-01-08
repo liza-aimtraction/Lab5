@@ -18,9 +18,6 @@ public class Building {
     private ArrayList<Person> persons;
     private Timer personGeneratorTimer;
     private PersonGenerator timerTask;
-    //lab5.PersonGenerator generator
-    //timer that adds people to list
-    EventLogger logger;
 
     public Building(){
         floors = new ArrayList<Floor>();
@@ -74,39 +71,45 @@ public class Building {
         }
         personGeneratorTimer.cancel();
 
-        // check one more time(some threads may be active for now)
         for (Person person : persons) {
-            try{
+            try {
                 person.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
+        // no more work for elevators
         for (Elevator elevator : elevators) {
-            try{
-                elevator.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            elevator.stop();
         }
     }
 
-    public void addFloor(){
-        int nextFloorNumber = getFloorCount();
-        floors.add(new Floor(nextFloorNumber));
+    public void createFloors(int numberOfFloors){
+        for(int i = 0; i < numberOfFloors; ++i){
+            floors.add(new Floor(i));
+        }
     }
 
-    public void addElevator(String elevatorLogName, IElevatorStrategy elevatorStrategy, int startingFloor){
-        elevators.add(new Elevator(elevatorLogName, elevatorStrategy, startingFloor));
+    public void createElevator(IElevatorStrategy elevatorStrategy, int startingFloor){
+        if(startingFloor < 0 || startingFloor >= floors.size()){
+            throw new Error("createElevator: Invalid floor passed");
+        }
+        else{
+            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor));
+        }
+
     }
 
-    public void addEntranceToFloor(int floorNumber, int elevatorNumber)
+    public void createEntrances()
     {
-        Floor floor = getFloor(floorNumber);
-        Elevator elevator = getElevator(elevatorNumber);
-        ElevatorEntrance entrance = new ElevatorEntrance(elevator);
-        floor.addEntrance(entrance);
+        for(int floonNumber = 0; floonNumber < floors.size(); ++floonNumber){
+            for(int elevatorNumber = 0; elevatorNumber < elevators.size(); ++elevatorNumber){
+                Floor floor = getFloor(floonNumber);
+                Elevator elevator = getElevator(elevatorNumber);
+                ElevatorEntrance entrance = new ElevatorEntrance(elevator);
+                floor.addEntrance(entrance);
+            }
+        }
     }
 
     public void addPerson(Person person){
