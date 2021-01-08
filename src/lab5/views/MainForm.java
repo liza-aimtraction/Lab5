@@ -21,11 +21,15 @@ public class MainForm {
      */
     public static void initBuilding(){
         MainForm.building = new Building();
-        building.createFloors(3);
+        building.createFloors(5);
         building.createElevator(new BasicElevatorStrategy(), building.getFloor(2));
+        building.createElevator(new BasicElevatorStrategy(), building.getFloor(1));
+        building.createElevator(new BasicElevatorStrategy(), building.getFloor(4));
         building.createEntrances();
         building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
-        building.setupPersonGenerator(300, 0);
+        building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));
+        building.addPerson(new Person("ManuallyCreatedPerson3", 60, 0.5, building.getFloor(2), 1, building));
+        building.setupPersonGenerator(300, 5);
         building.startupBuildingThreads();
         building.waitForAllThread();
     }

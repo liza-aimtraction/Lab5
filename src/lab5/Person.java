@@ -94,7 +94,7 @@ public class Person extends Thread {
         }
     }
 
-    private synchronized void  selectEntrance()
+    private void  selectEntrance()
     {
         selectedEntrance = currentFloor.getEntranceWithShortestQueue();
         selectedEntrance.addPersonToQueue(this);
@@ -119,6 +119,8 @@ public class Person extends Thread {
         currentFloor = enteredElevator.getCurrentFloor();
         enteredElevator.removePerson(this);
         EventLogger.log(getName() + " left elevator at floor " + currentFloor.getNumber(), getName());
+        EventLogger.log(getName() + " spent time in queue  " + timeSpentInQueue, getName());
+        EventLogger.log(getName() + " spent time in elevator  " + timeSpentInElevator, getName());
     }
 
     private boolean checkIfCanCallElevator(){

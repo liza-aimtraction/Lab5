@@ -129,7 +129,7 @@ public class Building {
     }
 
     public Floor getUpperFloor(Floor floor){
-        if(floor.getNumber() == getFloorCount() - 2){
+        if(floor.getNumber() == getFloorCount() - 1){
             throw new Error("There is no upper floor");
         }
         return floors.get(floor.getNumber() + 1);
