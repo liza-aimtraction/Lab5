@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasicElevatorStrategy implements IElevatorStrategy {
+
+    private String name = "Basic";
+
+    public String getName() {
+        return name;
+    }
+
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator){
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
         if(peopleInsideElevator.size() == 0){

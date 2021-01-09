@@ -90,12 +90,13 @@ public class Building {
         }
     }
 
-    public void createElevator(IElevatorStrategy elevatorStrategy, Floor startingFloor, double maxMass, double maxVolume){
+    public Elevator createElevator(IElevatorStrategy elevatorStrategy, Floor startingFloor, double maxMass, double maxVolume){
         if(startingFloor.getNumber() < 0 || startingFloor.getNumber() >= floors.size()){
             throw new Error("createElevator: Invalid floor passed");
         }
         else{
             elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume));
+            return elevators.get(elevators.size() - 1);
         }
 
     }
