@@ -5,10 +5,7 @@ import lab5.IElevator;
 import lab5.IElevatorStrategy;
 import lab5.Person;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.SortedSet;
 
 public class OptimalElevatorStrategy implements IElevatorStrategy {
     class PossibleTarget {
@@ -74,5 +71,11 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         });
 
         return possibleTargets;
+    }
+
+    private String name = "Optimal";
+
+    public String getName() {
+        return name;
     }
 }

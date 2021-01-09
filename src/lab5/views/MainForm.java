@@ -30,9 +30,9 @@ public class MainForm {
     }
 
     public void addNewElevator(int selected, double maxMass, double maxVolume) {
-        IElevatorStrategy strategy =
-                selected == 0 ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
-        building.createElevator(strategy, building.getFloor(0), maxMass, maxVolume);
+        IElevatorStrategy strategy = (selected == 0) ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
+        Elevator elevator = building.createElevator(strategy, building.getFloor(0), maxMass, maxVolume);
+        elevatorList.append(String.format("%s Strategy: %s; maxMass: %.2f; maxVolume: %.2f\n", elevator.getName(), strategy.getName(), maxMass, maxVolume));
     }
 
     /**
