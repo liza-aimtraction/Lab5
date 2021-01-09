@@ -32,15 +32,9 @@ public class MainForm {
             new AddElevatorForm(this);
         });
 
-        frame.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
-                EventLogger.saveLogs();
-                System.exit(0);
-            }
-        });
         start.addActionListener(e -> {
-            BuildingForm buildingForm = new BuildingForm(this);
-            runBuilding();
+            BuildingForm buildingForm = new BuildingForm(this, MainForm.building);
+            frame.setVisible(false);
         });
     }
 
@@ -65,10 +59,6 @@ public class MainForm {
         building.setupPersonGenerator(1000, 5);
     }
 
-    public static void runBuilding() {
-        building.startupBuildingThreads();
-        building.waitForAllThread();
-    }
 
     private static void buildAndDisplayUI(){
         new MainForm();
