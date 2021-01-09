@@ -39,7 +39,7 @@ public class MainForm {
         MainForm.building = new Building();
         building.createFloors(5);
         building.createElevator(new BasicElevatorStrategy(), building.getFloor(0));
-        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0));
+        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0));
         building.createElevator(new BasicElevatorStrategy(), building.getFloor(0));
         building.createEntrances();
         building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
