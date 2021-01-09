@@ -19,7 +19,7 @@ public class Floor {
         this.entrances.add(entrance);
     }
 
-    public ElevatorEntrance getEntranceWithShortestQueue() {
+    public ElevatorEntrance addPersonToEntranceWithShortestQueue(Person person) {
         ElevatorEntrance shortest = null;
         int shortestQueueSize = 9999;
         for (ElevatorEntrance entrance : entrances)
@@ -31,6 +31,7 @@ public class Floor {
                 shortestQueueSize = curQueueSize;
             }
         }
+        shortest.addPersonToQueue(person);
         return shortest;
     }
 

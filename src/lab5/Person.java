@@ -64,20 +64,20 @@ public class Person extends Thread {
 
         while (true)
         {
-            if(checkIfCanCallElevator()){
-                callElevator();
-            }
+            callElevatorIfCan();
+
             int time = waitSomeTime();
             timeSpentInQueue += time;
 
-            boolean canEnter = checkIfCanEnterElevator();
-            if (canEnter) {
-                enterElevator();
+
+
+            if(enterElevatorIfCan()){
+                // entered elevator
                 break;
             }
 
             // to prevent infinite waiting, we wait for no more than 15 seconds
-            if (timeSpentInQueue > 15000) {
+            if (timeSpentInQueue > 60000) {
                 EventLogger.log(getName() + " is tired of waiting, it left the queue :(", getName());
                 return;
             }
@@ -94,10 +94,9 @@ public class Person extends Thread {
         }
     }
 
-    private void  selectEntrance()
+    private void selectEntrance()
     {
-        selectedEntrance = currentFloor.getEntranceWithShortestQueue();
-        selectedEntrance.addPersonToQueue(this);
+        selectedEntrance = currentFloor.addPersonToEntranceWithShortestQueue(this);
         EventLogger.log(getName() + " entered elevator entrance with " + selectedEntrance.getElevator().getName(), getName());
     }
 
@@ -123,6 +122,30 @@ public class Person extends Thread {
         EventLogger.log(getName() + " spent time in elevator  " + timeSpentInElevator, getName());
     }
 
+    /**
+     *
+     * @return rtue if called elevator
+     */
+    private boolean callElevatorIfCan(){
+        if(checkIfCanCallElevator()){
+            callElevator();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return true if entered elevator
+     */
+    private boolean enterElevatorIfCan(){
+        boolean canEnter = checkIfCanEnterElevator();
+        if (canEnter) {
+            enterElevator();
+            return true;
+        }
+        return false;
+    }
     private boolean checkIfCanCallElevator(){
         return selectedEntrance.getPersonPositionInQueue(this) == 0;
     }

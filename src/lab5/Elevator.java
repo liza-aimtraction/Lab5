@@ -48,12 +48,12 @@ public class Elevator extends Thread implements IElevator {
 
     public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building){
         setName(logName); // thread name
-        EventLogger.log(getName() + " spawned at floor " + startingFloor.getNumber(), getName());
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
         this.callQueue = new ArrayList<Integer>();
         this.currentFloor = startingFloor;
         this.building = building;
+        EventLogger.log(getName() + " created ", getName());
     }
 
     public void call(int toFloor){
@@ -76,6 +76,7 @@ public class Elevator extends Thread implements IElevator {
             currentFloor = floorToChange;
             progressTo = 0;
             movingDirection = Direction.IDLE;
+            EventLogger.log(getName() + " changed floor to: " + currentFloor.getNumber(), getName());
         }
         else{
             throw  new Error("ERROR: changeFloor : " + currentFloor + " --> " + floorToChange + ". Diff is not 1!");
@@ -95,6 +96,7 @@ public class Elevator extends Thread implements IElevator {
     }
 
     private void elevatorLifeCycle() throws InterruptedException {
+        EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber(), getName());
         while(true){
 
             Thread.sleep(100);
@@ -112,7 +114,9 @@ public class Elevator extends Thread implements IElevator {
             else if(notAtCommandFloor()){
                 simulateMovementToFloor();
             }
-            // else no work to do
+            else{
+                currentCommand = null;
+            }
         }
     }
 
