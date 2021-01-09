@@ -37,6 +37,9 @@ public class MainForm {
                 System.exit(0);
             }
         });
+        start.addActionListener(e -> {
+            BuildingForm buildingForm = new BuildingForm(this);
+        });
     }
 
     public void addNewElevator(int selected, double maxMass, double maxVolume) {
