@@ -1,5 +1,9 @@
 package lab5.views;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
 import lab5.*;
 import lab5.ElevatorStrategies.BasicElevatorStrategy;
 
@@ -15,6 +19,18 @@ public class MainForm {
     private JTextField spawnRate;
 
     private static Building building;
+
+    public MainForm() {
+        JFrame frame = new JFrame("MainForm");
+        frame.setContentPane(mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setSize(700, 400);
+        frame.setVisible(true);
+        addElevatorButton.addActionListener(e -> {
+            AddElevatorForm addForm = new AddElevatorForm(this);
+        });
+    }
 
     /**
      * method will be deleted in future.
@@ -35,12 +51,7 @@ public class MainForm {
     }
 
     private static void buildAndDisplayUI(){
-        JFrame frame = new JFrame("MainForm");
-        frame.setContentPane(new MainForm().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setSize(700, 400);
-        frame.setVisible(true);
+        new MainForm();
     }
 
     public static void main(String[] args){

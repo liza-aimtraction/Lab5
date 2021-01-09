@@ -1,8 +1,5 @@
 package lab5;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-
 import java.util.ArrayList;
 import java.util.List;
 

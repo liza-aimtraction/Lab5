@@ -14,7 +14,7 @@
         </constraints>
         <properties>
           <model>
-            <item value="First Strategy"/>
+            <item value="Basic Strategy"/>
             <item value="Second Strategy"/>
           </model>
         </properties>

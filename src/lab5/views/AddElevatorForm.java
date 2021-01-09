@@ -1,6 +1,7 @@
 package lab5.views;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
 
 /////////////////////////////////////////////////////
 //LIZA + Swing = disappointment & aggression
@@ -13,12 +14,17 @@ public class AddElevatorForm {
     private JTextField volumeInput;
     private JPanel mainPanel;
 
-    AddElevatorForm() {
+    AddElevatorForm(MainForm form) {
         JFrame frame = new JFrame("AddElevatorForm");
-        frame.setContentPane(new AddElevatorForm().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(mainPanel);
         frame.pack();
-        frame.setSize(700, 400);
+        frame.setSize(300, 200);
         frame.setVisible(true);
+        addButton.addActionListener(e -> {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        });
+        cancelButton.addActionListener(e -> {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        });
     }
 }
