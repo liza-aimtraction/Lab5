@@ -103,13 +103,14 @@ public class Elevator extends Thread implements IElevator {
         EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber(), getName());
         while(true){
 
-            Thread.sleep(100);
+            Thread.sleep(300);
 
             if(currentCommand == null || currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.NONE){
                 currentCommand = elevatorStrategy.CalculateNextMove(this);
+                EventLogger.log(getName() + " next command: " + currentCommand.floorToMove + " from " + currentCommand.triggerSource
+                        , getName());
             }
-            
-            EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber(), getName());
+
 
             if(arrivedAtCommandFloor()){
                 OpenDoors();
