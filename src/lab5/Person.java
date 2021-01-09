@@ -159,12 +159,20 @@ public class Person extends Thread {
         //EventLogger.log(getName() + " checked if elevator is open...", getName());
         if (selectedEntrance.isOpen())
         {
-            return true;
+            return selectedEntrance.getElevator().isAbleToAdd(this);
         }
         return false;
     }
 
     public int getDestinationFloor() {
         return destinationFloor;
+    }
+
+    public double getMass(){
+        return mass;
+    }
+
+    public double getArea(){
+        return area;
     }
 }

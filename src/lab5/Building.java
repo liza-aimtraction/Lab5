@@ -95,7 +95,7 @@ public class Building {
             throw new Error("createElevator: Invalid floor passed");
         }
         else{
-            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this));
+            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, 500, 500));
         }
 
     }

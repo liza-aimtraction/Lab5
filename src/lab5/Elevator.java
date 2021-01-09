@@ -1,5 +1,6 @@
 package lab5;
 
+import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +47,15 @@ public class Elevator extends Thread implements IElevator {
      */
     private int progressTo;
 
-    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building){
+    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double maxVolume){
         setName(logName); // thread name
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
         this.callQueue = new ArrayList<Integer>();
         this.currentFloor = startingFloor;
         this.building = building;
+        this.maxMass = maxMass;
+        this.maxVolume = maxVolume;
         EventLogger.log(getName() + " created ", getName());
     }
 
@@ -101,7 +104,7 @@ public class Elevator extends Thread implements IElevator {
 
             Thread.sleep(100);
 
-            if(currentCommand == null){
+            if(currentCommand == null || currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.NONE){
                 currentCommand = elevatorStrategy.CalculateNextMove(this);
             }
 
@@ -115,7 +118,7 @@ public class Elevator extends Thread implements IElevator {
                 simulateMovementToFloor();
             }
             else{
-                currentCommand = null;
+                // nothing to to
             }
         }
     }
@@ -189,6 +192,19 @@ public class Elevator extends Thread implements IElevator {
     public void removePerson(Person person){
         EventLogger.log(getName() + " removed " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
         peopleInside.remove(person);
+    }
+
+    public boolean isAbleToAdd(Person person){
+        double currentMass = 0;
+        double currentVolume = 0;
+        for ( Person p : peopleInside ) {
+            currentMass += p.getMass();
+            currentVolume += p.getArea();
+        }
+        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < maxVolume){
+            return true;
+        }
+        return false;
     }
 
     @Override
