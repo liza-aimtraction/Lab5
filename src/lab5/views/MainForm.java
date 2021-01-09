@@ -1,13 +1,10 @@
 package lab5.views;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 import lab5.*;
 import lab5.ElevatorStrategies.BasicElevatorStrategy;
-
-import javax.swing.*;
+import lab5.ElevatorStrategies.OptimalElevatorStrategy;
 
 public class MainForm {
 
@@ -28,8 +25,14 @@ public class MainForm {
         frame.setSize(700, 400);
         frame.setVisible(true);
         addElevatorButton.addActionListener(e -> {
-            AddElevatorForm addForm = new AddElevatorForm(this);
+            new AddElevatorForm(this);
         });
+    }
+
+    public void addNewElevator(int selected, double maxMass, double maxVolume) {
+        IElevatorStrategy strategy =
+                selected == 0 ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
+        building.createElevator(strategy, building.getFloor(0), maxMass, maxVolume);
     }
 
     /**
@@ -38,9 +41,9 @@ public class MainForm {
     public static void initBuilding(){
         MainForm.building = new Building();
         building.createFloors(5);
-        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0));
-        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0));
-        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0));
+        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0), 500, 500);
+        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0), 500, 500);
+        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0), 500 , 500);
         building.createEntrances();
         building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
         building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));

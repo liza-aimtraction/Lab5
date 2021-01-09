@@ -15,7 +15,7 @@
         <properties>
           <model>
             <item value="Basic Strategy"/>
-            <item value="Second Strategy"/>
+            <item value="Optimal Strategy"/>
           </model>
         </properties>
       </component>
