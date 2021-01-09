@@ -30,6 +30,9 @@ public class MainForm {
         addElevatorButton.addActionListener(e -> {
             AddElevatorForm addForm = new AddElevatorForm(this);
         });
+        start.addActionListener(e -> {
+            BuildingForm buildingForm = new BuildingForm(this);
+        });
     }
 
     /**
