@@ -83,7 +83,7 @@ public class Elevator extends Thread implements IElevator {
             EventLogger.log(getName() + " changed floor to: " + currentFloor.getNumber(), getName());
         }
         else{
-            throw  new Error("ERROR: changeFloor : " + currentFloor + " --> " + floorToChange + ". Diff is not 1!");
+            throw new Error("ERROR: changeFloor : " + currentFloor + " --> " + floorToChange + ". Diff is not 1!");
         }
     }
 
@@ -108,6 +108,8 @@ public class Elevator extends Thread implements IElevator {
             if(currentCommand == null || currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.NONE){
                 currentCommand = elevatorStrategy.CalculateNextMove(this);
             }
+            
+            EventLogger.log(getName() + " spawned at floor " + currentFloor.getNumber(), getName());
 
             if(arrivedAtCommandFloor()){
                 OpenDoors();

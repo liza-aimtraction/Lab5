@@ -76,7 +76,7 @@ public class Person extends Thread {
                 break;
             }
 
-            // to prevent infinite waiting, we wait for no more than 15 seconds
+            // to prevent infinite waiting, we wait for no more than 60 seconds
             if (timeSpentInQueue > 60000) {
                 EventLogger.log(getName() + " is tired of waiting, it left the queue :(", getName());
                 return;

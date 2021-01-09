@@ -57,7 +57,6 @@ public class Building {
         personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
     }
 
-
     /**
      * Waits for all persons and elevators threads
      */

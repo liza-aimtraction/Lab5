@@ -13,7 +13,7 @@ public class BasicElevatorStrategy implements IElevatorStrategy {
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
         if(peopleInsideElevator.size() == 0){
             int nextCall = elevator.getNextCall();
-            if(nextCall != -1){
+            if(nextCall != -1) {
                 return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloor().getNumber());
             }
             else{
