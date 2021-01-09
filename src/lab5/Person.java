@@ -154,12 +154,11 @@ public class Person extends Thread {
         return building.getFloor(destinationFloor).getElevatorEntranceByElevator(enteredElevator)._isOpen;
     }
 
-
     private boolean checkIfCanEnterElevator() {
         //EventLogger.log(getName() + " checked if elevator is open...", getName());
         if (selectedEntrance.isOpen())
         {
-            return selectedEntrance.getElevator().isAbleToAdd(this);
+            return selectedEntrance.getElevator().canFitInside(this);
         }
         return false;
     }

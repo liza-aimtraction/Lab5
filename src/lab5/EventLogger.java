@@ -15,7 +15,7 @@ import java.util.Map;
  * @param {boolean} alsoLogToConsole - set it manually to also log to console
  */
 public class EventLogger {
-    private static  String logFileRelPath;
+    private static String logFileRelPath;
     private static FileWriter writer;
     private static SimpleDateFormat formatter;
     private static boolean alsoLogToConsole = true;

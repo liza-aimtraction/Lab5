@@ -17,7 +17,7 @@ public class Elevator extends Thread implements IElevator {
 
     private double maxMass;
 
-    private double maxVolume;
+    private double floorArea;
 
     private IElevatorStrategy elevatorStrategy;
 
@@ -48,7 +48,7 @@ public class Elevator extends Thread implements IElevator {
      */
     private int progressTo;
 
-    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double maxVolume){
+    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
         setName(logName); // thread name
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
@@ -56,7 +56,7 @@ public class Elevator extends Thread implements IElevator {
         this.currentFloor = startingFloor;
         this.building = building;
         this.maxMass = maxMass;
-        this.maxVolume = maxVolume;
+        this.floorArea = floorArea;
         EventLogger.log(getName() + " created ", getName());
     }
 
@@ -195,14 +195,26 @@ public class Elevator extends Thread implements IElevator {
         peopleInside.remove(person);
     }
 
-    public boolean isAbleToAdd(Person person){
+    public double getCurrentMass() {
         double currentMass = 0;
-        double currentVolume = 0;
         for ( Person p : peopleInside ) {
             currentMass += p.getMass();
-            currentVolume += p.getArea();
         }
-        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < maxVolume){
+        return currentMass;
+    }
+
+    public double getCurrentArea() {
+        double currentArea = 0;
+        for ( Person p : peopleInside ) {
+            currentArea += p.getArea();
+        }
+        return currentArea;
+    }
+
+    public boolean canFitInside(Person person){
+        double currentMass = getCurrentMass();
+        double currentVolume = getCurrentArea();
+        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea){
             return true;
         }
         return false;

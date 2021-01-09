@@ -93,11 +93,10 @@ public class Building {
         if(startingFloor.getNumber() < 0 || startingFloor.getNumber() >= floors.size()){
             throw new Error("createElevator: Invalid floor passed");
         }
-        else{
+        else {
             elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume));
             return elevators.get(elevators.size() - 1);
         }
-
     }
 
     public void createEntrances()
