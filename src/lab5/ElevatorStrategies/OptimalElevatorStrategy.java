@@ -23,6 +23,7 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         }
 
         public float getRelativePriority(int currentFloor) {
+            if (currentFloor == targetFloor) return 99999f;
             int distance = Math.abs(currentFloor - targetFloor);
             float initialPriority = getInitialPriority();
             return initialPriority / (float)distance;
@@ -45,6 +46,9 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
                     sourceMultiplier = 0;
                     break;
             }
+
+            // firstly to avoid division by zero, secondly to add more chance for later people in queue
+            int convertedQueuePosition = queuePosition + 4;
 
             return sourceMultiplier / queuePosition;
         }
@@ -80,7 +84,7 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
 
         for (int i = 0; i < callQueue.size(); ++i)
         {
-            int queuePosition = i;
+            int queuePosition = i + 1;
             int calledFloor = callQueue.get(i);
             ElevatorStrategyCommand.TriggerSource source = ElevatorStrategyCommand.TriggerSource.OUTSIDE;
             possibleTargets.add(new PossibleTarget(queuePosition, calledFloor, source));
