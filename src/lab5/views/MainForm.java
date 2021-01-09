@@ -3,6 +3,7 @@ package lab5.views;
 import javax.swing.*;
 
 import lab5.*;
+import lab5.Elevator;
 import lab5.ElevatorStrategies.BasicElevatorStrategy;
 import lab5.ElevatorStrategies.OptimalElevatorStrategy;
 
