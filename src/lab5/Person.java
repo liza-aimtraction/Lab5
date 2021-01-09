@@ -117,14 +117,14 @@ public class Person extends Thread {
     private void leaveElevator(){
         currentFloor = enteredElevator.getCurrentFloor();
         enteredElevator.removePerson(this);
-        EventLogger.log(getName() + " left elevator at floor " + currentFloor.getNumber(), getName());
-        EventLogger.log(getName() + " spent time in queue  " + timeSpentInQueue, getName());
-        EventLogger.log(getName() + " spent time in elevator  " + timeSpentInElevator, getName());
+        EventLogger.log(getName() + " left elevator at floor " + currentFloor.getNumber() +
+                ", spent time in queue  " + timeSpentInQueue + ", spent time in elevator  " + timeSpentInElevator,
+                getName());
     }
 
     /**
      *
-     * @return rtue if called elevator
+     * @return true if called elevator
      */
     private boolean callElevatorIfCan(){
         if(checkIfCanCallElevator()){

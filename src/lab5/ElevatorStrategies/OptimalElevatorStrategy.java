@@ -14,12 +14,10 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
     class PossibleTarget {
         int queuePosition;
         int targetFloor;
-        ElevatorStrategyCommand.TriggerSource source;
 
-        public PossibleTarget(int queuePosition, int targetFloor, ElevatorStrategyCommand.TriggerSource source) {
+        public PossibleTarget(int queuePosition, int targetFloor) {
             this.queuePosition = queuePosition;
             this.targetFloor = targetFloor;
-            this.source = source;
         }
 
         public float getRelativePriority(int currentFloor) {
@@ -30,27 +28,10 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         }
 
         public float getInitialPriority() {
-            float sourceMultiplier;
-
-            // people inside elevator are more valuable
-            switch (source)
-            {
-                case INSIDE:
-                    sourceMultiplier = 100;
-                    break;
-                case OUTSIDE:
-                    sourceMultiplier = 40;
-                    break;
-                case NONE:
-                default:
-                    sourceMultiplier = 0;
-                    break;
-            }
-
             // firstly to avoid division by zero, secondly to add more chance for later people in queue
             int convertedQueuePosition = queuePosition + 4;
 
-            return sourceMultiplier / queuePosition;
+            return 100.0f / convertedQueuePosition;
         }
     }
 
@@ -59,18 +40,22 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         ArrayList<Integer> callQueue = elevator.getCallQueue();
         int currentFloor = elevator.getCurrentFloor().getNumber();
 
-        ArrayList<PossibleTarget> priorityList = createPriorityList(peopleInsideElevator, callQueue, currentFloor);
+        ArrayList<PossibleTarget> priorityList = createPriorityList(peopleInsideElevator, currentFloor);
 
-        if(priorityList.size() == 0) {
-            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, currentFloor);
+        if(priorityList.size() > 0) {
+            PossibleTarget bestTarget = priorityList.get(0);
+            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.INSIDE, bestTarget.targetFloor);
         }
 
-        PossibleTarget bestTarget = priorityList.get(0);
+        if (callQueue.size() > 0)
+        {
+            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, callQueue.get(0));
+        }
 
-        return new ElevatorStrategyCommand(bestTarget.source, bestTarget.targetFloor);
+        return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, currentFloor);
     }
 
-    private ArrayList<PossibleTarget> createPriorityList(ArrayList<Person> peopleInsideElevator, ArrayList<Integer> callQueue, int currentFloor) {
+    private ArrayList<PossibleTarget> createPriorityList(ArrayList<Person> peopleInsideElevator, int currentFloor) {
         ArrayList<PossibleTarget> possibleTargets = new ArrayList<>();
 
         for (int i = 0; i < peopleInsideElevator.size(); ++i)
@@ -79,15 +64,7 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
             int queuePosition = i;
             int destinationFloor = person.getDestinationFloor();
             ElevatorStrategyCommand.TriggerSource source = ElevatorStrategyCommand.TriggerSource.INSIDE;
-            possibleTargets.add(new PossibleTarget(queuePosition, destinationFloor, source));
-        }
-
-        for (int i = 0; i < callQueue.size(); ++i)
-        {
-            int queuePosition = i + 1;
-            int calledFloor = callQueue.get(i);
-            ElevatorStrategyCommand.TriggerSource source = ElevatorStrategyCommand.TriggerSource.OUTSIDE;
-            possibleTargets.add(new PossibleTarget(queuePosition, calledFloor, source));
+            possibleTargets.add(new PossibleTarget(queuePosition, destinationFloor));
         }
 
         possibleTargets.sort((target1, target2) -> {

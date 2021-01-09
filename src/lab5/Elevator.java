@@ -112,7 +112,6 @@ public class Elevator extends Thread implements IElevator {
                 OpenDoors();
                 Thread.sleep(2000);
                 CloseDoors();
-
             }
             else if(notAtCommandFloor()){
                 simulateMovementToFloor();
@@ -128,7 +127,7 @@ public class Elevator extends Thread implements IElevator {
         currentFloor.getElevatorEntranceByElevator(this).open();
 
         if(currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.OUTSIDE){
-            if(callQueue.get(0) != currentFloor.getNumber()){
+            if(callQueue.get(0) != currentFloor.getNumber()) {
                 throw new Error("Incorrect logic in Elevator Call Queue");
             }
             callQueue.remove(0);
@@ -145,8 +144,6 @@ public class Elevator extends Thread implements IElevator {
             }
         }
     }
-
-
 
     private boolean arrivedAtCommandFloor(){
         if(currentCommand.floorToMove == currentFloor.getNumber()) {
