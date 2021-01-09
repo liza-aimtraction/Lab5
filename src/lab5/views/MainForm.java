@@ -6,6 +6,9 @@ import lab5.*;
 import lab5.ElevatorStrategies.BasicElevatorStrategy;
 import lab5.ElevatorStrategies.OptimalElevatorStrategy;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class MainForm {
 
     private JPanel mainPanel;
@@ -26,6 +29,16 @@ public class MainForm {
         frame.setVisible(true);
         addElevatorButton.addActionListener(e -> {
             new AddElevatorForm(this);
+        });
+
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                EventLogger.saveLogs();
+                System.exit(0);
+            }
+        });
+        start.addActionListener(e -> {
+            BuildingForm buildingForm = new BuildingForm(this);
         });
     }
 
@@ -62,7 +75,5 @@ public class MainForm {
         buildAndDisplayUI();
 
         initBuilding();
-
-        EventLogger.saveLogs();
     }
 }
