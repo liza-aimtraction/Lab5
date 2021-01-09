@@ -18,6 +18,7 @@ public class Building {
     private ArrayList<Person> persons;
     private Timer personGeneratorTimer;
     private PersonGenerator timerTask;
+    private int generatePersonInterval;
 
     public Building(){
         floors = new ArrayList<Floor>();
@@ -44,6 +45,8 @@ public class Building {
         for (Elevator elevator : elevators) {
             elevator.start();
         }
+
+        personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
     }
 
     /**
@@ -54,7 +57,7 @@ public class Building {
     public void setupPersonGenerator(int generatePersonInterval, int limitOfGenerations){
         timerTask = new PersonGenerator(this, limitOfGenerations);
         personGeneratorTimer = new Timer();
-        personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
+        this.generatePersonInterval = generatePersonInterval;
     }
 
     /**
