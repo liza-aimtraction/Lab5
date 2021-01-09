@@ -3,6 +3,7 @@ package lab5;
 import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
@@ -20,7 +21,7 @@ public class Elevator extends Thread implements IElevator {
 
     private IElevatorStrategy elevatorStrategy;
 
-    private ArrayList<Integer> callQueue;
+    private ConcurrentLinkedQueue<Integer> callQueue;
 
     private ArrayList<Person> peopleInside;
 
@@ -51,7 +52,7 @@ public class Elevator extends Thread implements IElevator {
         setName(logName); // thread name
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
-        this.callQueue = new ArrayList<Integer>();
+        this.callQueue = new ConcurrentLinkedQueue<Integer>();
         this.currentFloor = startingFloor;
         this.building = building;
         this.maxMass = maxMass;
@@ -127,7 +128,7 @@ public class Elevator extends Thread implements IElevator {
         currentFloor.getElevatorEntranceByElevator(this).open();
 
         if(currentCommand.triggerSource == ElevatorStrategyCommand.TriggerSource.OUTSIDE){
-            if(callQueue.get(0) != currentFloor.getNumber()) {
+            if(callQueue.peek() != currentFloor.getNumber()) {
                 throw new Error("Incorrect logic in Elevator Call Queue");
             }
             callQueue.remove(0);
@@ -139,8 +140,8 @@ public class Elevator extends Thread implements IElevator {
         EventLogger.log(getName() + " closed doors at floor " + currentFloor.getNumber(), getName());
         currentFloor.getElevatorEntranceByElevator(this).close();
         if(!callQueue.isEmpty()){
-            if(callQueue.get(0) == currentFloor.getNumber()){
-                callQueue.remove(0);
+            if(callQueue.peek() == currentFloor.getNumber()){
+                callQueue.remove();
             }
         }
     }
@@ -210,8 +211,8 @@ public class Elevator extends Thread implements IElevator {
     }
 
     @Override
-    public ArrayList<Integer> getCallQueue(){
-        return callQueue;
+    public int getNextCall(){
+        return (callQueue.size() > 0) ? callQueue.peek() : -1;
     }
 
     // For Strategy

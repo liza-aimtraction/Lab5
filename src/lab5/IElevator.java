@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IElevator {
     ArrayList<Person> getPeopleInside();
-    ArrayList<Integer> getCallQueue();
+    int getNextCall();
     Floor getCurrentFloor();
 }

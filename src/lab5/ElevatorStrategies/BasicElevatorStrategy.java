@@ -12,12 +12,12 @@ public class BasicElevatorStrategy implements IElevatorStrategy {
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator){
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
         if(peopleInsideElevator.size() == 0){
-            ArrayList<Integer> callQueue = elevator.getCallQueue();
-            if(callQueue.size() == 0){
+            int nextCall = elevator.getNextCall();
+            if(nextCall != -1){
                 return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloor().getNumber());
             }
             else{
-                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, callQueue.get(0));
+                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, nextCall);
             }
         }
         else{

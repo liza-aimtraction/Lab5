@@ -37,7 +37,7 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
 
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator) {
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
-        ArrayList<Integer> callQueue = elevator.getCallQueue();
+        int nextCall = elevator.getNextCall();
         int currentFloor = elevator.getCurrentFloor().getNumber();
 
         ArrayList<PossibleTarget> priorityList = createPriorityList(peopleInsideElevator, currentFloor);
@@ -47,9 +47,9 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
             return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.INSIDE, bestTarget.targetFloor);
         }
 
-        if (callQueue.size() > 0)
+        if (nextCall != -1)
         {
-            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, callQueue.get(0));
+            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, nextCall);
         }
 
         return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, currentFloor);
