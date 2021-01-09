@@ -40,6 +40,7 @@ public class MainForm {
         });
         start.addActionListener(e -> {
             BuildingForm buildingForm = new BuildingForm(this);
+            runBuilding();
         });
     }
 
@@ -62,6 +63,9 @@ public class MainForm {
         building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));
         building.addPerson(new Person("ManuallyCreatedPerson3", 60, 0.5, building.getFloor(2), 1, building));
         building.setupPersonGenerator(2000, 25);
+    }
+
+    public static void runBuilding() {
         building.startupBuildingThreads();
         building.waitForAllThread();
     }
