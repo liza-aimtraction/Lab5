@@ -21,6 +21,9 @@ public class AddElevatorForm {
         frame.setSize(300, 200);
         frame.setVisible(true);
         addButton.addActionListener(e -> {
+            double mass = Double.parseDouble(massInput.getText());
+            double volume = Double.parseDouble(volumeInput.getText());
+            form.addNewElevator(0, mass, volume);
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         });
         cancelButton.addActionListener(e -> {
