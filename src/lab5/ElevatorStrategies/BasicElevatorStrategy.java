@@ -6,7 +6,6 @@ import lab5.IElevatorStrategy;
 import lab5.Person;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BasicElevatorStrategy implements IElevatorStrategy {
 
@@ -17,7 +16,7 @@ public class BasicElevatorStrategy implements IElevatorStrategy {
     }
 
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator){
-        ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
+        ArrayList<Person> peopleInsideElevator = elevator.getPeopleInsideClonedList();
         if(peopleInsideElevator.size() == 0){
             int nextCall = elevator.getNextCall();
             if(nextCall == -1) {

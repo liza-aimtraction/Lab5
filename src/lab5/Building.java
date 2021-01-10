@@ -193,7 +193,7 @@ public class Building implements IBuildingFacade {
     @Override
     public int getPeopleCountInside(int elevatorNumber) {
         Elevator elevator = getElevator(elevatorNumber);
-        return elevator.getPeopleInside().size();
+        return elevator.getPeopleInsideClonedList().size();
     }
 
     @Override

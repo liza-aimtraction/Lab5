@@ -1,5 +1,7 @@
 package lab5;
 
+import sun.awt.Mutex;
+
 import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +16,12 @@ import static java.lang.Math.log;
 public class Elevator extends Thread implements IElevator {
 
     private Building building;
-
     private double maxMass;
-
     private double floorArea;
-
     private IElevatorStrategy elevatorStrategy;
-
     private ConcurrentLinkedQueue<Integer> callQueue;
-
     private ArrayList<Person> peopleInside;
+    private Mutex peopleMutex;
 
     /**
      * Needs to UI for knowing where to draw elevator
@@ -34,7 +32,6 @@ public class Elevator extends Thread implements IElevator {
     private Direction movingDirection;
 
     private Floor currentFloor;
-
     private ElevatorStrategyCommand currentCommand = null;
 
     /**
@@ -52,6 +49,11 @@ public class Elevator extends Thread implements IElevator {
         return progressTo;
     }
 
+    /**
+     * Defines moving speed in floors/second
+     */
+    public final double MOVE_SPEED = 0.5;
+
     public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
         setName(logName); // thread name
         this.elevatorStrategy = strategy;
@@ -61,6 +63,7 @@ public class Elevator extends Thread implements IElevator {
         this.building = building;
         this.maxMass = maxMass;
         this.floorArea = floorArea;
+        this.peopleMutex = new Mutex();
         EventLogger.log(getName() + " created ", getName());
     }
 
@@ -166,6 +169,14 @@ public class Elevator extends Thread implements IElevator {
         return currentCommand.floorToMove != currentFloor.getNumber();
     }
 
+    private void waitForProgressIncrement(int millis) {
+        try{
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void simulateMovementToFloor(){
         movingDirection =
                 currentCommand.floorToMove > currentFloor.getNumber()
@@ -173,13 +184,10 @@ public class Elevator extends Thread implements IElevator {
                         : Direction.DOWN;
 
         int iterations = 10;
-        for(int i = 0; i < iterations; i++){
-            try{
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            progressTo += 1.0 / (double)iterations;
+        for(int i = 0; i < iterations; i++) {
+            int millisecondsToWait = (int)(1000.0 / iterations);
+            waitForProgressIncrement(millisecondsToWait);
+            progressTo += MOVE_SPEED / (double)iterations;
         }
         if(movingDirection == Direction.DOWN){
             changeFloor(building.getLowerFloor(currentFloor));
@@ -190,28 +198,36 @@ public class Elevator extends Thread implements IElevator {
     }
 
     public void addPerson(Person person){
-        EventLogger.log(getName() + " added " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
+        peopleMutex.lock();
         peopleInside.add(person);
+        peopleMutex.unlock();
+        EventLogger.log(getName() + " added " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
     }
 
     public void removePerson(Person person){
-        EventLogger.log(getName() + " removed " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
+        peopleMutex.lock();
         peopleInside.remove(person);
+        peopleMutex.unlock();
+        EventLogger.log(getName() + " removed " + person.getName() + " at floor " + currentFloor.getNumber(), getName());
     }
 
     public double getCurrentMass() {
         double currentMass = 0;
+        peopleMutex.lock();
         for ( Person p : peopleInside ) {
             currentMass += p.getMass();
         }
+        peopleMutex.unlock();
         return currentMass;
     }
 
     public double getCurrentArea() {
         double currentArea = 0;
+        peopleMutex.lock();
         for ( Person p : peopleInside ) {
             currentArea += p.getArea();
         }
+        peopleMutex.unlock();
         return currentArea;
     }
 
@@ -225,8 +241,11 @@ public class Elevator extends Thread implements IElevator {
     }
 
     @Override
-    public ArrayList<Person> getPeopleInside(){
-        return peopleInside;
+    public ArrayList<Person> getPeopleInsideClonedList(){
+        peopleMutex.lock();
+        ArrayList<Person> clonedPeople = (ArrayList<Person>)peopleInside.clone();
+        peopleMutex.unlock();
+        return clonedPeople;
     }
 
     @Override
