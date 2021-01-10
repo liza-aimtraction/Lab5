@@ -12,12 +12,14 @@ public class ElevatorPanel extends JPanel  {
     public static final int height = 50;
     private Color color;
     private String text;
+    private  boolean isOpen;
 
-    public ElevatorPanel(int x, int y, Color color, String text) {
+    public ElevatorPanel(int x, int y, Color color, String text, boolean isOpen) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.text = text;
+        this.isOpen = isOpen;
         setSize(width, height);
     }
 
@@ -26,14 +28,24 @@ public class ElevatorPanel extends JPanel  {
         return new Dimension(width, height);
     }
 
+    public void update(int y, boolean isOpen){
+        this.y = y;
+        this.isOpen = isOpen;
+
+    }
+
     public void paintElevator(Graphics g) {
         g.setColor(color);
-        g.drawRect(x, y, width, height);
+        if(isOpen)
+            g.drawRect(x, y, width, height);
+        else
+            g.fillRect(x, y, width, height);
         int centerX = x + (int)(width / 2.0);
         int centerY = y + (int)(height / 2.0);
         System.out.printf("x: %d, y: %d, centerX: %d, centerY: %d: ", x, y, centerX, centerY);
+        g.setColor(Color.BLACK);
         g.drawString(text, centerX, centerY);
-        ++y;
+        --y;
     }
 
 }
