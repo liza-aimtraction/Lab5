@@ -213,6 +213,30 @@ public class Building implements IBuildingFacade {
     }
 
     @Override
+    public double getElevatorMass(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getCurrentMass();
+    }
+
+    @Override
+    public double getElevatorMaxMass(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getMaxMass();
+    }
+
+    @Override
+    public double getElevatorArea(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getCurrentArea();
+    }
+
+    @Override
+    public double getElevatorMaxArea(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getMaxArea();
+    }
+
+    @Override
     public boolean isElevatorOpen(int elevatorNumber) {
         Elevator elevator = getElevator(elevatorNumber);
         Floor floor = elevator.getCurrentFloor();

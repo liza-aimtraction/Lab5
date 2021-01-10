@@ -2,13 +2,10 @@ package lab5;
 
 import sun.awt.Mutex;
 
-import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.log;
 
 /**
  * @author Oikawa, lexa
@@ -17,11 +14,19 @@ public class Elevator extends Thread implements IElevator {
 
     private Building building;
     private double maxMass;
-    private double floorArea;
+    private double maxArea;
     private IElevatorStrategy elevatorStrategy;
     private ConcurrentLinkedQueue<Integer> callQueue;
     private ArrayList<Person> peopleInside;
     private Mutex peopleMutex;
+
+    public double getMaxMass() {
+        return maxMass;
+    }
+
+    public double getMaxArea() {
+        return maxArea;
+    }
 
     /**
      * Needs to UI for knowing where to draw elevator
@@ -56,7 +61,7 @@ public class Elevator extends Thread implements IElevator {
      */
     public final float MOVE_SPEED = 0.75f;
 
-    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
+    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double maxArea){
         setName(logName); // thread name
         this.elevatorStrategy = strategy;
         this.peopleInside = new ArrayList<Person>();
@@ -64,7 +69,7 @@ public class Elevator extends Thread implements IElevator {
         this.currentFloor = startingFloor;
         this.building = building;
         this.maxMass = maxMass;
-        this.floorArea = floorArea;
+        this.maxArea = maxArea;
         this.peopleMutex = new Mutex();
         EventLogger.log(getName() + " created ", getName());
     }
@@ -238,7 +243,7 @@ public class Elevator extends Thread implements IElevator {
     public boolean canFitInside(Person person){
         double currentMass = getCurrentMass();
         double currentVolume = getCurrentArea();
-        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea) {
+        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < maxArea) {
             return true;
         }
         return false;
@@ -246,8 +251,8 @@ public class Elevator extends Thread implements IElevator {
 
     public float getFloorHeight() {
         float progressDependingOnDirection =
-                (getMovingDirection() == Elevator.Direction.UP) ? progressTo :
-                        (getMovingDirection() == Elevator.Direction.DOWN) ? -progressTo :
+                (getMovingDirection() == Direction.UP) ? progressTo :
+                        (getMovingDirection() == Direction.DOWN) ? -progressTo :
                                 0;
 
         float floorNumber = getCurrentFloor().getNumber();

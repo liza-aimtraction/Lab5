@@ -55,7 +55,7 @@ public class MainForm {
         building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
         building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));
         building.addPerson(new Person("ManuallyCreatedPerson3", 60, 0.5, building.getFloor(2), 1, building));
-        building.setupPersonGenerator(1000, 15);
+        building.setupPersonGenerator(500, 50);
     }
 
 
