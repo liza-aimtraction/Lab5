@@ -12,12 +12,10 @@ public class BuildingFrame extends JFrame {
     public BuildingFrame(Building building) {
 
         buildingPanel = new BuildingPanel(building);
-        ElevatorsPanel panel = new ElevatorsPanel();
-        setContentPane(panel);
-        //add(buildingPanel);
+        add(buildingPanel);
 
         pack(); // sets JFrame dimension to contain subcomponents
-        setResizable(false);
+        setResizable(true);
         setTitle("Building Frame");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(700, 400);

@@ -10,24 +10,20 @@ import java.awt.event.WindowEvent;
 public class BuildingForm {
     private Building building;
     private BuildingFrame buildingFrame;
-    private ElevatorFrame elevatorFrame;
 
     BuildingForm(Building building){
         this.building = building;
         building.startupBuildingThreads();
 
-        elevatorFrame = new ElevatorFrame();
-        elevatorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        elevatorFrame.setVisible(true);
+        buildingFrame = new BuildingFrame(building);
+        buildingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        buildingFrame.setVisible(true);
 
-
-        //buildingFrame = new BuildingFrame(building);
 
         BuildingFormThread drawingThread = new BuildingFormThread();
         drawingThread.start();
 
-        //TODO: change to buildingFrame
-        elevatorFrame.addWindowListener(new WindowAdapter(){
+        buildingFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                 drawingThread.stop();
                 building.killAllThreads();
@@ -45,27 +41,8 @@ public class BuildingForm {
 
         @Override
         public void run() {
-            moveElevators();
-            //buildingFrame.moveElevators();
-        }
-
-        public void moveElevators()
-        {
-            while(true) {
-                elevatorFrame.getPanel().repaint();
-                try
-                {
-                    Thread.sleep(30);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            buildingFrame.moveElevators();
         }
     }
-
-
-
-
 }
 
