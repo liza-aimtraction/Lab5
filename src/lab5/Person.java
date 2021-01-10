@@ -69,8 +69,6 @@ public class Person extends Thread {
             int time = waitSomeTime();
             timeSpentInQueue += time;
 
-
-
             if(enterElevatorIfCan()){
                 // entered elevator
                 break;
@@ -139,10 +137,15 @@ public class Person extends Thread {
      * @return true if entered elevator
      */
     private boolean enterElevatorIfCan(){
-        boolean canEnter = checkIfCanEnterElevator();
-        if (canEnter) {
-            enterElevator();
-            return true;
+        if (selectedEntrance.isOpen())
+        {
+            if (selectedEntrance.getElevator().canFitInside(this)) {
+                enterElevator();
+                return true;
+            }
+            else {
+                EventLogger.log(getName() + " is too fat to fit in the elevator!", getName());
+            }
         }
         return false;
     }
@@ -152,15 +155,6 @@ public class Person extends Thread {
 
     private boolean isElevatorAtDesiredFloor(){
         return building.getFloor(destinationFloor).getElevatorEntranceByElevator(enteredElevator).isOpen();
-    }
-
-    private boolean checkIfCanEnterElevator() {
-        //EventLogger.log(getName() + " checked if elevator is open...", getName());
-        if (selectedEntrance.isOpen())
-        {
-            return selectedEntrance.getElevator().canFitInside(this);
-        }
-        return false;
     }
 
     public int getDestinationFloor() {
