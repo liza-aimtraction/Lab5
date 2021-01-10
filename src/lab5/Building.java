@@ -196,6 +196,11 @@ public class Building implements IBuildingFacade {
     }
 
     @Override
+    public String getElevatorStrategyName(int elevatorNumber) {
+        return elevators.get(elevatorNumber).getElevatorStrategy().getName();
+    }
+
+    @Override
     public int getPeopleCountInside(int elevatorNumber) {
         Elevator elevator = getElevator(elevatorNumber);
         return elevator.getPeopleInsideClonedList().size();

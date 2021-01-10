@@ -8,6 +8,7 @@ import java.awt.*;
 public class BuildingFrame extends JFrame {
 
     private JPanel buildingPanel;
+    private static final int repaintDelay = 50;
 
     public BuildingFrame(Building building) {
 
@@ -18,7 +19,6 @@ public class BuildingFrame extends JFrame {
         setResizable(true);
         setTitle("Building Frame");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(700, 400);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -29,7 +29,7 @@ public class BuildingFrame extends JFrame {
             this.repaint();
             try
             {
-                Thread.sleep(30);
+                Thread.sleep(repaintDelay);
             }
             catch (Exception e) {
                 e.printStackTrace();

@@ -1,11 +1,13 @@
 package lab5.views;
 
 import lab5.Building;
+import lab5.Elevator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BuildingPanel extends JPanel {
 
@@ -18,24 +20,39 @@ public class BuildingPanel extends JPanel {
     private final int maxHeight = 300;
     private final int margin = 10;
 
+
     BuildingPanel(Building building)
     {
+        this.building = building;
+        width = building.getElevatorCount() * ElevatorPanel.width;
+        height = building.getFloorCount() * ElevatorPanel.height;
+
         elevatorPanels = new ArrayList<>();
         for(int i = 0; i < building.getElevatorCount(); ++i) {
-            System.out.println("Elevator count: " + building.getElevatorCount());
-            elevatorPanels.add(new ElevatorPanel(i * ElevatorPanel.width + margin, i * ElevatorPanel.height + margin, Color.RED, "3"));
-            System.out.println(elevatorPanels.get(i).getX());
-            //add(elevatorPanels.get(i));
+            elevatorPanels.add(new ElevatorPanel(i * ElevatorPanel.width + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
+                    String.valueOf(building.getPeopleCountInside(i)), building.isElevatorOpen(i)));
         }
-        this.building = building;
-        width = 400;
-        height = 400;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    }
+
+    public Color getStrategyColor(String strategyName) {
+        switch (strategyName)
+        {
+            case("Basic"): {
+                return Color.BLUE;
+            }
+            case("Optimal"): {
+                return  Color.YELLOW;
+            }
+            default:
+                return Color.BLACK;
+        }
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(width + 20, height + 20);
+        return new Dimension(width + margin * 2, height + margin * 2);
     }
 
     @Override
@@ -44,10 +61,15 @@ public class BuildingPanel extends JPanel {
         g.setColor(Color.BLACK);
         for(int i = 0; i < building.getFloorCount(); ++i){
             g.drawRect(margin, i * ElevatorPanel.height + margin, width, ElevatorPanel.height);
+
         }
 
-        for (ElevatorPanel panel: elevatorPanels) {
-            panel.paintElevator(g);
+        for (int i = 0; i < elevatorPanels.size(); ++i) {
+            float elevatorHeight = building.getFloorCount() -  1 - building.getElevatorHeight(i);
+            System.out.println("elevatorHeight:" + elevatorHeight);
+            int y = (int)(elevatorHeight * ElevatorPanel.height) + margin;
+            elevatorPanels.get(i).update(y, building.isElevatorOpen(i));
+            elevatorPanels.get(i).paintElevator(g);
         }
     }
 }
