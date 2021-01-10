@@ -1,28 +1,32 @@
 package lab5.views;
 
 import lab5.Building;
-import lab5.Elevator;
 import lab5.EventLogger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class BuildingForm {
-    private JPanel mainPanel;
     private Building building;
+    private BuildingFrame buildingFrame;
+    private ElevatorFrame elevatorFrame;
 
-    BuildingForm(MainForm form, Building building){
+    BuildingForm(Building building){
         this.building = building;
         building.startupBuildingThreads();
-        ElevatorFrame elevatorFrame = new ElevatorFrame();
+
+        elevatorFrame = new ElevatorFrame();
         elevatorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         elevatorFrame.setVisible(true);
+
+
+        //buildingFrame = new BuildingFrame(building);
 
         BuildingFormThread drawingThread = new BuildingFormThread();
         drawingThread.start();
 
+        //TODO: change to buildingFrame
         elevatorFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                 drawingThread.stop();
@@ -31,30 +35,36 @@ public class BuildingForm {
                 System.exit(0);
             }
         });
-
-//        JFrame frame = new JFrame("BuildingForm");
-//        mainPanel = new JPanel();
-//        frame.setContentPane(mainPanel);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setSize(700, 400);
-//        frame.setVisible(true);
-
     }
 
     public class BuildingFormThread extends Thread {
 
-        // pass through constructor all you need
         public BuildingFormThread(){
 
         }
+
         @Override
         public void run() {
-            while(true){
-                //System.out.println("Seems to work good");
+            moveElevators();
+            //buildingFrame.moveElevators();
+        }
+
+        public void moveElevators()
+        {
+            while(true) {
+                elevatorFrame.getPanel().repaint();
+                try
+                {
+                    Thread.sleep(30);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
+
 
 
 }
