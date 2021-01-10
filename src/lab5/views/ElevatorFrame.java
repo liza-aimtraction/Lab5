@@ -11,16 +11,13 @@ public class ElevatorFrame extends JFrame {
     public ElevatorFrame() {
 
         buildingPanel = new BuildingPanel(null);
-        buildingPanel.setLayout(null);
-        setContentPane(buildingPanel);
-        add(new ElevatorPanel(0, 0,  Color.BLUE, "5"));
-        add(new ElevatorPanel(60, 0, Color.RED, "5"));
-        add(new ElevatorPanel(120, 0, Color.GREEN, "5"));
+        //buildingPanel.setLayout(null);
+        //setContentPane(buildingPanel);
 
-        //add(buildingPanel);
+        add(buildingPanel);
 
         pack(); // sets JFrame dimension to contain subcomponents
-
+        setLayout(null);
         setResizable(false);
         setTitle("Graphics Test");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

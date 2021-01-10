@@ -22,14 +22,15 @@ public class BuildingPanel extends JPanel {
         height = 400;
        // width = building.getElevatorCount() * (ElevatorPanel.width + 10) + 100;
        // height = building.getFloorCount() * (ElevatorPanel.height + 10) + 100;
-        //setLayout(null);
-//        elevatorsPanel = new ElevatorsPanel();
-//        add(elevatorsPanel);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        elevatorsPanel = new ElevatorsPanel();
+        add(elevatorsPanel);
+        setSize(width, height);
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(height, width);
+        return new Dimension(height + 20, width + 20);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class BuildingPanel extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
         int margin = 10;
-        g.drawRect(margin, margin, maxWidth, maxHeight);
+        g.drawRect(margin, margin, width, height);
     }
 
     JPanel getPanel()
