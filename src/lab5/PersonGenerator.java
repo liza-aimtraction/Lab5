@@ -49,8 +49,8 @@ public class PersonGenerator extends TimerTask {
         mtx.lock();
         if(generatedPersons < limitOfGenerations){
             String personName = "GeneratedPerson" + generatedPersons++;
-            double mass = 40 + random.nextDouble() * 60.0;
-            double area = 0.3 + 0.5 * random.nextDouble(); // in square meters
+            double mass = 40.0 + random.nextDouble() * 60.0;
+            double area = 30.0 + 50.0 * random.nextDouble(); // in square centimeters
             int floorCount = building.getFloorCount();
             int startingFloorNumber = random.nextInt(floorCount);
             int destinationFloorNumber = random.nextInt(floorCount);
