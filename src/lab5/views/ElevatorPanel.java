@@ -28,9 +28,10 @@ public class ElevatorPanel extends JPanel  {
         return new Dimension(width, height);
     }
 
-    public void update(int y, boolean isOpen){
+    public void update(int y, boolean isOpen, String text){
         this.y = y;
         this.isOpen = isOpen;
+        this.text = text;
 
     }
 

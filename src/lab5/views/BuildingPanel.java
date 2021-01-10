@@ -16,20 +16,19 @@ public class BuildingPanel extends JPanel {
     private int width;
     private int height;
 
-    private final int maxWidth = 300;
-    private final int maxHeight = 300;
     private final int margin = 10;
+    private final int waitingPlaceWidth = 50;
 
 
     BuildingPanel(Building building)
     {
         this.building = building;
-        width = building.getElevatorCount() * ElevatorPanel.width;
+        width = building.getElevatorCount() * (ElevatorPanel.width + waitingPlaceWidth);
         height = building.getFloorCount() * ElevatorPanel.height;
 
         elevatorPanels = new ArrayList<>();
         for(int i = 0; i < building.getElevatorCount(); ++i) {
-            elevatorPanels.add(new ElevatorPanel(i * ElevatorPanel.width + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
+            elevatorPanels.add(new ElevatorPanel(i * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
                     String.valueOf(building.getPeopleCountInside(i)), building.isElevatorOpen(i)));
         }
 
@@ -60,17 +59,38 @@ public class BuildingPanel extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
         for(int i = 0; i < building.getFloorCount(); ++i){
-            g.drawRect(margin, i * ElevatorPanel.height + margin, width, ElevatorPanel.height);
+            paintFloor(g, i);
 
+            for(int j = 0; j < elevatorPanels.size(); ++j) {
+                paintPeopleOutside(g, i, j);
+            }
         }
 
         for (int i = 0; i < elevatorPanels.size(); ++i) {
+
+            paintWaitingLine(g, i);
+
             float elevatorHeight = building.getFloorCount() -  1 - building.getElevatorHeight(i);
             System.out.println("elevatorHeight:" + elevatorHeight);
             int y = (int)(elevatorHeight * ElevatorPanel.height) + margin;
-            elevatorPanels.get(i).update(y, building.isElevatorOpen(i));
+            elevatorPanels.get(i).update(y, building.isElevatorOpen(i), String.valueOf(building.getPeopleCountInside(i)));
             elevatorPanels.get(i).paintElevator(g);
         }
+    }
+
+    void paintFloor( Graphics g, int floorNumber) {
+        g.drawRect(margin, floorNumber * ElevatorPanel.height + margin, width, ElevatorPanel.height);
+    }
+
+    void paintPeopleOutside(Graphics g, int floorNumber, int elevatorNumber) {
+        g.drawString(String.valueOf(building.getPeopleCountOutside(floorNumber, elevatorNumber)),
+                (elevatorNumber + 1) * ElevatorPanel.width + (elevatorNumber * waitingPlaceWidth) + waitingPlaceWidth / 2,
+                (building.getFloorCount() - 1 - floorNumber) * ElevatorPanel.height);
+    }
+
+    void paintWaitingLine(Graphics g, int elevatorNumber){
+        g.drawLine((elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth) + elevatorNumber * margin, margin,
+                (elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth)+ elevatorNumber * margin, height + margin * 2 - margin) ;
     }
 }
 
