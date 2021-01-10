@@ -33,7 +33,7 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
     }
 
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator) {
-        ArrayList<Person> peopleInsideElevator = elevator.getPeopleInside();
+        ArrayList<Person> peopleInsideElevator = elevator.getPeopleInsideClonedList();
         int nextCall = elevator.getNextCall();
         int currentFloor = elevator.getCurrentFloor().getNumber();
 

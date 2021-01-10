@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IElevator {
-    ArrayList<Person> getPeopleInside();
+    ArrayList<Person> getPeopleInsideClonedList();
     int getNextCall();
     Floor getCurrentFloor();
 }

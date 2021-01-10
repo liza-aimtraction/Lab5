@@ -1,5 +1,7 @@
 package lab5;
 
+import sun.awt.Mutex;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,14 +11,16 @@ import java.util.Queue;
 public class ElevatorEntrance {
     private ArrayList<Person> peopleInQueue;
     private Elevator elevator;
+    private Mutex queueMutex;
 
     public ElevatorEntrance(Elevator elevator) {
         this.elevator = elevator;
         this.peopleInQueue = new ArrayList<Person>();
+        this.queueMutex = new Mutex();
     }
 
-    boolean _isOpen;
-    boolean isOpen() {
+    private boolean _isOpen;
+    public boolean isOpen() {
         return _isOpen;
     }
 
@@ -36,16 +40,23 @@ public class ElevatorEntrance {
         return peopleInQueue.size();
     }
 
-    int getPersonPositionInQueue(Person person) {
-        return peopleInQueue.indexOf(person);
+    public int getPersonPositionInQueue(Person person) {
+        queueMutex.lock();
+        int index = peopleInQueue.indexOf(person);
+        queueMutex.unlock();
+        return index;
     }
 
-    void addPersonToQueue(Person person){
+    public void addPersonToQueue(Person person){
+        queueMutex.lock();
         peopleInQueue.add(person);
+        queueMutex.unlock();
     }
 
-    void removePersonFromQueue(Person person){
+    public void removePersonFromQueue(Person person){
+        queueMutex.lock();
         peopleInQueue.remove(person);
+        queueMutex.unlock();
     }
 
     public Elevator getElevator(){

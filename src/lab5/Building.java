@@ -12,7 +12,7 @@ import java.util.Timer;
  *
  *
  */
-public class Building {
+public class Building implements IBuildingFacade {
     private ArrayList<Floor> floors;
     private ArrayList<Elevator> elevators;
     private ArrayList<Person> persons;
@@ -20,7 +20,7 @@ public class Building {
     private PersonGenerator timerTask;
     private int generatePersonInterval;
 
-    public Building(){
+    public Building() {
         floors = new ArrayList<Floor>();
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
@@ -33,11 +33,10 @@ public class Building {
      *      so we check if thread already running or not
      */
     public void startupBuildingThreads(){
-        timerTask.mtx.lock();
-        ArrayList<Person> personsCopy = (ArrayList<Person>)persons.clone();
-        timerTask.mtx.unlock();
-        for (Person person : personsCopy) {
-            if (person.isAlive() == false) {
+        ArrayList<Person> peopleCopy = getPeopleCopyThreadSafe();
+
+        for (Person person : peopleCopy) {
+            if (!person.isAlive()) {
                 person.start();
             }
         }
@@ -47,6 +46,13 @@ public class Building {
         }
 
         personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
+    }
+
+    private ArrayList<Person> getPeopleCopyThreadSafe() {
+        timerTask.mtx.lock();
+        ArrayList<Person> people = (ArrayList<Person>)persons.clone();
+        timerTask.mtx.unlock();
+        return people;
     }
 
     /**
@@ -86,6 +92,31 @@ public class Building {
         }
     }
 
+    public boolean allThreadsEnded(){
+        for (Person person : persons) {
+            if(person.isAlive()){
+                return false;
+            }
+        }
+        for (Elevator elevator : elevators) {
+            if(elevator.isAlive()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void killAllThreads(){
+        personGeneratorTimer.cancel();
+
+        for (Person person : persons) {
+            person.stop();
+        }
+        for (Elevator elevator : elevators) {
+            elevator.stop();
+        }
+    }
+
     public void createFloors(int numberOfFloors){
         for(int i = 0; i < numberOfFloors; ++i){
             floors.add(new Floor(i));
@@ -97,17 +128,23 @@ public class Building {
             throw new Error("createElevator: Invalid floor passed");
         }
         else {
-            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume));
+            Elevator elevator = new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume);
+            elevators.add(elevator);
+            createEntrancesForElevatorOnEveryFloor(elevator);
             return elevators.get(elevators.size() - 1);
         }
     }
 
-    public void createEntrances()
-    {
-        for(int floonNumber = 0; floonNumber < floors.size(); ++floonNumber){
-            for(int elevatorNumber = 0; elevatorNumber < elevators.size(); ++elevatorNumber){
-                Floor floor = getFloor(floonNumber);
-                Elevator elevator = getElevator(elevatorNumber);
+    private void createEntrancesForElevatorOnEveryFloor(Elevator elevator) {
+        for (int floorNumber = 0; floorNumber < floors.size(); ++floorNumber) {
+            Floor floor = getFloor(floorNumber);
+
+            // is it stupid? Perhaps returning null if entrance doesn't exist instead of throwing error would be better
+            try {
+                floor.getElevatorEntranceByElevator(elevator);
+                EventLogger.log("Tried to create already existing elevator entrance: " + elevator.getName() + " floor = " + floorNumber, elevator.getName());
+            }
+            catch (Error e) {
                 ElevatorEntrance entrance = new ElevatorEntrance(elevator);
                 floor.addEntrance(entrance);
             }
@@ -116,10 +153,6 @@ public class Building {
 
     public void addPerson(Person person){
         persons.add(person);
-    }
-
-    public int getFloorCount() {
-        return floors.size();
     }
 
     public Floor getFloor(int floorNumber) {
@@ -142,5 +175,43 @@ public class Building {
             throw new Error("There is no lower floor");
         }
         return floors.get(floor.getNumber() - 1);
+    }
+
+    @Override
+    public int getFloorCount() {
+        return floors.size();
+    }
+
+    @Override
+    public int getPeopleCountOutside(int floorNumber, int elevatorNumber) {
+        Floor floor = getFloor(floorNumber);
+        Elevator elevator = getElevator(elevatorNumber);
+        ElevatorEntrance entrance = floor.getElevatorEntranceByElevator(elevator);
+        return entrance.getQueueSize();
+    }
+
+    @Override
+    public int getPeopleCountInside(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getPeopleInsideClonedList().size();
+    }
+
+    @Override
+    public float getElevatorHeight(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        float progress = elevator.getProgressTo();
+        float progressDependingOnDirection =
+                (elevator.getMovingDirection() == Elevator.Direction.UP) ? progress :
+                        (elevator.getMovingDirection() == Elevator.Direction.DOWN) ? -progress :
+                                0;
+        return elevator.getCurrentFloor().getNumber() + progressDependingOnDirection;
+    }
+
+    @Override
+    public boolean isElevatorOpen(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        Floor floor = elevator.getCurrentFloor();
+        ElevatorEntrance entrance = floor.getElevatorEntranceByElevator(elevator);
+        return entrance.isOpen();
     }
 }

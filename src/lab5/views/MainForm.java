@@ -49,14 +49,13 @@ public class MainForm {
      */
     public static void initBuilding(){
         MainForm.building = new Building();
-        building.createFloors(5);
+        building.createFloors(7);
         building.createElevator(new BasicElevatorStrategy(), building.getFloor(0), 500, 500);
         building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0), 500, 500);
-        building.createEntrances();
         building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
         building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));
         building.addPerson(new Person("ManuallyCreatedPerson3", 60, 0.5, building.getFloor(2), 1, building));
-        building.setupPersonGenerator(1000, 5);
+        building.setupPersonGenerator(1000, 15);
     }
 
 

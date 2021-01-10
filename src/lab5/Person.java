@@ -151,7 +151,7 @@ public class Person extends Thread {
     }
 
     private boolean isElevatorAtDesiredFloor(){
-        return building.getFloor(destinationFloor).getElevatorEntranceByElevator(enteredElevator)._isOpen;
+        return building.getFloor(destinationFloor).getElevatorEntranceByElevator(enteredElevator).isOpen();
     }
 
     private boolean checkIfCanEnterElevator() {

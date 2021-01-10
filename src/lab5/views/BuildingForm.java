@@ -25,9 +25,13 @@ public class BuildingForm {
 
        // elevatorFrame.getPanel().repaint();
 
+        BuildingFormThread drawingThread = new BuildingFormThread();
+        drawingThread.start();
+
         elevatorFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                //building.waitForAllThread();
+                drawingThread.stop();
+                building.killAllThreads();
                 EventLogger.saveLogs();
                 System.exit(0);
             }
@@ -63,6 +67,20 @@ public class BuildingForm {
             }
             catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public class BuildingFormThread extends Thread {
+
+        // pass through constructor all you need
+        public BuildingFormThread(){
+
+        }
+        @Override
+        public void run() {
+            while(true){
+                //System.out.println("Seems to work good");
             }
         }
     }
