@@ -32,7 +32,13 @@ public class Elevator extends Thread implements IElevator {
     private Direction movingDirection;
 
     private Floor currentFloor;
+
     private ElevatorStrategyCommand currentCommand = null;
+
+    public IElevatorStrategy getElevatorStrategy()
+    {
+        return elevatorStrategy;
+    }
 
     /**
      * Needs to UI for knowing where to draw elevator
