@@ -49,16 +49,12 @@ public class Elevator extends Thread implements IElevator {
      *
      * In this case destination floor can be only  (starting floor - 1) or (starting floor + 1)
      */
-    private int progressTo;
-
-    public int getProgressTo() {
-        return progressTo;
-    }
+    private float progressTo;
 
     /**
      * Defines moving speed in floors/second
      */
-    public final double MOVE_SPEED = 0.5;
+    public final float MOVE_SPEED = 0.5f;
 
     public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
         setName(logName); // thread name
@@ -189,11 +185,11 @@ public class Elevator extends Thread implements IElevator {
                         ? Direction.UP
                         : Direction.DOWN;
 
-        int iterations = 10;
+        int iterations = Math.round(10 / MOVE_SPEED);
         for(int i = 0; i < iterations; i++) {
             int millisecondsToWait = (int)(1000.0 / iterations);
             waitForProgressIncrement(millisecondsToWait);
-            progressTo += MOVE_SPEED / (double)iterations;
+            progressTo = (float)i / iterations;
         }
         if(movingDirection == Direction.DOWN){
             changeFloor(building.getLowerFloor(currentFloor));
@@ -240,10 +236,20 @@ public class Elevator extends Thread implements IElevator {
     public boolean canFitInside(Person person){
         double currentMass = getCurrentMass();
         double currentVolume = getCurrentArea();
-        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea){
+        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea) {
             return true;
         }
         return false;
+    }
+
+    public float getFloorHeight() {
+        float progressDependingOnDirection =
+                (getMovingDirection() == Elevator.Direction.UP) ? progressTo :
+                        (getMovingDirection() == Elevator.Direction.DOWN) ? -progressTo :
+                                0;
+
+        float floorNumber = getCurrentFloor().getNumber();
+        return (float)floorNumber + progressDependingOnDirection;
     }
 
     @Override

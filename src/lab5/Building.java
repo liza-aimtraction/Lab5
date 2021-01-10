@@ -209,12 +209,8 @@ public class Building implements IBuildingFacade {
     @Override
     public float getElevatorHeight(int elevatorNumber) {
         Elevator elevator = getElevator(elevatorNumber);
-        float progress = elevator.getProgressTo();
-        float progressDependingOnDirection =
-                (elevator.getMovingDirection() == Elevator.Direction.UP) ? progress :
-                        (elevator.getMovingDirection() == Elevator.Direction.DOWN) ? -progress :
-                                0;
-        return elevator.getCurrentFloor().getNumber() + progressDependingOnDirection;
+        EventLogger.log("Returned height: " + elevator.getFloorHeight(), elevator.getName());
+        return elevator.getFloorHeight();
     }
 
     @Override
