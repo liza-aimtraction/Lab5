@@ -262,6 +262,13 @@ public class Elevator extends Thread implements IElevator {
         return clonedPeople;
     }
 
+    public int getPeopleInsideCount(){
+        peopleMutex.lock();
+        int count = peopleInside.size();
+        peopleMutex.unlock();
+        return count;
+    }
+
     @Override
     public int getNextCall(){
         return (callQueue.size() > 0) ? callQueue.peek() : -1;
