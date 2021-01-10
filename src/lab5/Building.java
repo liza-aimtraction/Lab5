@@ -109,6 +109,29 @@ public class Building implements IBuildingFacade {
         }
     }
 
+    public boolean allThreadsEnded(){
+        for (Person person : persons) {
+            if(person.isAlive()){
+                return false;
+            }
+        }
+        for (Elevator elevator : elevators) {
+            if(elevator.isAlive()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void killAllThreads(){
+        for (Person person : persons) {
+            person.stop();
+        }
+        for (Elevator elevator : elevators) {
+            elevator.stop();
+        }
+    }
+
     public void createFloors(int numberOfFloors){
         for(int i = 0; i < numberOfFloors; ++i){
             floors.add(new Floor(i));
