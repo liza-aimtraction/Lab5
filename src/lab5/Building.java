@@ -107,15 +107,15 @@ public class Building implements IBuildingFacade {
     }
 
     public void killAllThreads(){
+        personGeneratorTimer.cancel();
+        personGeneratorTimer.purge();
+
         for (Person person : persons) {
             person.stop();
         }
         for (Elevator elevator : elevators) {
             elevator.stop();
         }
-
-        personGeneratorTimer.cancel();
-        personGeneratorTimer.purge();
     }
 
     public void createFloors(int numberOfFloors){
@@ -136,9 +136,9 @@ public class Building implements IBuildingFacade {
 
     public void createEntrances()
     {
-        for(int floonNumber = 0; floonNumber < floors.size(); ++floonNumber){
+        for(int floorNumber = 0; floorNumber < floors.size(); ++floorNumber){
             for(int elevatorNumber = 0; elevatorNumber < elevators.size(); ++elevatorNumber){
-                Floor floor = getFloor(floonNumber);
+                Floor floor = getFloor(floorNumber);
                 Elevator elevator = getElevator(elevatorNumber);
                 ElevatorEntrance entrance = new ElevatorEntrance(elevator);
                 floor.addEntrance(entrance);
