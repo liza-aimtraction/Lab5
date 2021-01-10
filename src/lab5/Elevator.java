@@ -54,7 +54,7 @@ public class Elevator extends Thread implements IElevator {
     /**
      * Defines moving speed in floors/second
      */
-    public final float MOVE_SPEED = 0.5f;
+    public final float MOVE_SPEED = 0.75f;
 
     public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
         setName(logName); // thread name
@@ -185,11 +185,13 @@ public class Elevator extends Thread implements IElevator {
                         ? Direction.UP
                         : Direction.DOWN;
 
-        int iterations = Math.round(10 / MOVE_SPEED);
-        for(int i = 0; i < iterations; i++) {
-            int millisecondsToWait = (int)(1000.0 / iterations);
-            waitForProgressIncrement(millisecondsToWait);
+        int iterations = 20;
+        float timeToMove = 1000.0f / MOVE_SPEED;
+        int millisecondsToWait = (int)(timeToMove / iterations);
+
+        for(int i = 1; i <= iterations; i++) {
             progressTo = (float)i / iterations;
+            waitForProgressIncrement(millisecondsToWait);
         }
         if(movingDirection == Direction.DOWN){
             changeFloor(building.getLowerFloor(currentFloor));
