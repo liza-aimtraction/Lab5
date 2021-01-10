@@ -74,8 +74,8 @@ public class Person extends Thread {
                 break;
             }
 
-            // to prevent infinite waiting, we wait for no more than 60 seconds
-            if (timeSpentInQueue > 60000) {
+            // to prevent infinite waiting, we wait for no more than 120 seconds
+            if (timeSpentInQueue > 120000) {
                 EventLogger.log(getName() + " is tired of waiting, it left the queue :(", getName());
                 return;
             }
@@ -99,7 +99,7 @@ public class Person extends Thread {
     }
 
     private void callElevator(){
-        //EventLogger.log(getName() + " called elevator at floor" + currentFloor.getNumber(), getName());
+        EventLogger.log(getName() + " called elevator at floor" + currentFloor.getNumber(), getName());
         selectedEntrance.callElevator(this.currentFloor.getNumber());
     }
 
