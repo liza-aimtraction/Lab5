@@ -18,12 +18,13 @@ public class ElevatorPanel extends JPanel  {
         this.y = y;
         this.color = color;
         this.text = text;
-        setLayout(null);
+        //setLayout(null);
+        setSize(width, height);
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(width * 2, height * 2);
+        return new Dimension(width, height);
     }
 
     @Override

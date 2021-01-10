@@ -13,9 +13,11 @@ public class ElevatorsPanel extends JPanel {
         add(new ElevatorPanel(60, 0, Color.RED, "5"));
         add(new ElevatorPanel(120, 0, Color.GREEN, "5"));
 
-        setVisible(true);
+        setSize(ElevatorPanel.width * 4, ElevatorPanel.height * 6);
     }
 
-
-
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(ElevatorPanel.width * 4, ElevatorPanel.height * 6);
+    }
 }
