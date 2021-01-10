@@ -48,6 +48,10 @@ public class Elevator extends Thread implements IElevator {
      */
     private int progressTo;
 
+    public int getProgressTo() {
+        return progressTo;
+    }
+
     public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double floorArea){
         setName(logName); // thread name
         this.elevatorStrategy = strategy;

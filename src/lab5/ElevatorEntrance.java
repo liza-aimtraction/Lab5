@@ -15,8 +15,8 @@ public class ElevatorEntrance {
         this.peopleInQueue = new ArrayList<Person>();
     }
 
-    boolean _isOpen;
-    boolean isOpen() {
+    private boolean _isOpen;
+    public boolean isOpen() {
         return _isOpen;
     }
 
