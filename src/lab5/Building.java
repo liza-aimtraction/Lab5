@@ -12,7 +12,7 @@ import java.util.Timer;
  *
  *
  */
-public class Building {
+public class Building implements IBuildingFacade {
     private ArrayList<Floor> floors;
     private ArrayList<Elevator> elevators;
     private ArrayList<Person> persons;
@@ -20,7 +20,7 @@ public class Building {
     private PersonGenerator timerTask;
     private int generatePersonInterval;
 
-    public Building(){
+    public Building() {
         floors = new ArrayList<Floor>();
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
@@ -141,10 +141,6 @@ public class Building {
         persons.add(person);
     }
 
-    public int getFloorCount() {
-        return floors.size();
-    }
-
     public Floor getFloor(int floorNumber) {
         return floors.get(floorNumber);
     }
@@ -165,5 +161,43 @@ public class Building {
             throw new Error("There is no lower floor");
         }
         return floors.get(floor.getNumber() - 1);
+    }
+
+    @Override
+    public int getFloorCount() {
+        return floors.size();
+    }
+
+    @Override
+    public int getPeopleCountOutside(int floorNumber, int elevatorNumber) {
+        Floor floor = getFloor(floorNumber);
+        Elevator elevator = getElevator(elevatorNumber);
+        ElevatorEntrance entrance = floor.getElevatorEntranceByElevator(elevator);
+        return entrance.getQueueSize();
+    }
+
+    @Override
+    public int getPeopleCountInside(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        return elevator.getPeopleInside().size();
+    }
+
+    @Override
+    public float getElevatorHeight(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        float progress = elevator.getProgressTo();
+        float progressDependingOnDirection =
+                (elevator.getMovingDirection() == Elevator.Direction.UP) ? progress :
+                        (elevator.getMovingDirection() == Elevator.Direction.DOWN) ? -progress :
+                                0;
+        return elevator.getCurrentFloor().getNumber() + progressDependingOnDirection;
+    }
+
+    @Override
+    public boolean isElevatorOpen(int elevatorNumber) {
+        Elevator elevator = getElevator(elevatorNumber);
+        Floor floor = elevator.getCurrentFloor();
+        ElevatorEntrance entrance = floor.getElevatorEntranceByElevator(elevator);
+        return entrance.isOpen();
     }
 }
