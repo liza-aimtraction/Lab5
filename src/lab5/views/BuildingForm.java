@@ -20,9 +20,13 @@ public class BuildingForm {
         elevatorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         elevatorFrame.setVisible(true);
 
+        BuildingFormThread drawingThread = new BuildingFormThread();
+        drawingThread.start();
+
         elevatorFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                //building.waitForAllThread();
+                drawingThread.stop();
+                building.killAllThreads();
                 EventLogger.saveLogs();
                 System.exit(0);
             }
@@ -36,6 +40,20 @@ public class BuildingForm {
 //        frame.setSize(700, 400);
 //        frame.setVisible(true);
 
+    }
+
+    public class BuildingFormThread extends Thread {
+
+        // pass through constructor all you need
+        public BuildingFormThread(){
+
+        }
+        @Override
+        public void run() {
+            while(true){
+                //System.out.println("Seems to work good");
+            }
+        }
     }
 
 

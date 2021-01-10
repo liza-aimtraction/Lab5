@@ -70,5 +70,6 @@ public class MainForm {
         buildAndDisplayUI();
 
         initBuilding();
+        building.waitForAllThread();
     }
 }
