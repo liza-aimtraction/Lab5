@@ -108,7 +108,6 @@ public class Building implements IBuildingFacade {
 
     public void killAllThreads(){
         personGeneratorTimer.cancel();
-        personGeneratorTimer.purge();
 
         for (Person person : persons) {
             person.stop();
@@ -129,17 +128,23 @@ public class Building implements IBuildingFacade {
             throw new Error("createElevator: Invalid floor passed");
         }
         else {
-            elevators.add(new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume));
+            Elevator elevator = new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume);
+            elevators.add(elevator);
+            createEntrancesForElevatorOnEveryFloor(elevator);
             return elevators.get(elevators.size() - 1);
         }
     }
 
-    public void createEntrances()
-    {
-        for(int floorNumber = 0; floorNumber < floors.size(); ++floorNumber){
-            for(int elevatorNumber = 0; elevatorNumber < elevators.size(); ++elevatorNumber){
-                Floor floor = getFloor(floorNumber);
-                Elevator elevator = getElevator(elevatorNumber);
+    private void createEntrancesForElevatorOnEveryFloor(Elevator elevator) {
+        for (int floorNumber = 0; floorNumber < floors.size(); ++floorNumber) {
+            Floor floor = getFloor(floorNumber);
+
+            // is it stupid? Perhaps returning null if entrance doesn't exist instead of throwing error would be better
+            try {
+                floor.getElevatorEntranceByElevator(elevator);
+                EventLogger.log("Tried to create already existing elevator entrance: " + elevator.getName() + " floor = " + floorNumber, elevator.getName());
+            }
+            catch (Error e) {
                 ElevatorEntrance entrance = new ElevatorEntrance(elevator);
                 floor.addEntrance(entrance);
             }
