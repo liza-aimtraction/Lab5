@@ -30,7 +30,10 @@ public class BuildingPanel extends JPanel {
         elevatorPanels = new ArrayList<>();
         for(int i = 0; i < building.getElevatorCount(); ++i) {
             elevatorPanels.add(new ElevatorPanel(i * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
-                    String.valueOf(building.getPeopleCountInside(i)), building.isElevatorOpen(i)));
+                    String.format("%d", building.getPeopleCountInside(i) ),
+                    String.format("M: %d/%d", (int)building.getElevatorMass(i), (int)building.getElevatorMaxMass(i)),
+                    String.format("S: %d/%d", (int)building.getElevatorArea(i), (int)building.getElevatorMaxArea(i)),
+                    building.isElevatorOpen(i)));
         }
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -72,9 +75,10 @@ public class BuildingPanel extends JPanel {
             paintWaitingLine(g, i);
 
             float elevatorHeight = building.getFloorCount() -  1 - building.getElevatorHeight(i);
-            System.out.println("elevatorHeight:" + elevatorHeight);
             int y = (int)(elevatorHeight * ElevatorPanel.height) + margin;
-            elevatorPanels.get(i).update(y, building.isElevatorOpen(i), String.valueOf(building.getPeopleCountInside(i)));
+            elevatorPanels.get(i).update(y, building.isElevatorOpen(i), String.format("%d", building.getPeopleCountInside(i) ),
+                    String.format("M: %d/%d", (int)building.getElevatorMass(i), (int)building.getElevatorMaxMass(i)),
+                    String.format("S: %d/%d", (int)building.getElevatorArea(i), (int)building.getElevatorMaxArea(i)));
             elevatorPanels.get(i).paintElevator(g);
         }
     }
@@ -90,8 +94,8 @@ public class BuildingPanel extends JPanel {
     }
 
     void paintWaitingLine(Graphics g, int elevatorNumber){
-        g.drawLine((elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth) + elevatorNumber * margin, margin,
-                (elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth)+ elevatorNumber * margin, height + margin * 2 - margin) ;
+        g.drawLine((elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth + margin), margin,
+                (elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth + margin), height + margin * 2 - margin) ;
     }
 }
 
