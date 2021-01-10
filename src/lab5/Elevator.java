@@ -234,7 +234,7 @@ public class Elevator extends Thread implements IElevator {
     public boolean canFitInside(Person person){
         double currentMass = getCurrentMass();
         double currentVolume = getCurrentArea();
-        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea){
+        if(currentMass + person.getMass() < maxMass && currentVolume + person.getArea() < floorArea) {
             return true;
         }
         return false;
