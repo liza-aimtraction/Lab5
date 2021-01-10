@@ -10,15 +10,20 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class BuildingForm {
-    private JPanel mainPanel;
     private Building building;
+    private ElevatorFrame elevatorFrame;
 
-    BuildingForm(MainForm form, Building building){
+    BuildingForm(Building building){
         this.building = building;
         building.startupBuildingThreads();
-        ElevatorFrame elevatorFrame = new ElevatorFrame();
+        elevatorFrame = new ElevatorFrame();
         elevatorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         elevatorFrame.setVisible(true);
+        new Test().go();
+
+        // elevatorFrame.moveElevators();
+
+       // elevatorFrame.getPanel().repaint();
 
         elevatorFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
@@ -28,14 +33,38 @@ public class BuildingForm {
             }
         });
 
-//        JFrame frame = new JFrame("BuildingForm");
-//        mainPanel = new JPanel();
-//        frame.setContentPane(mainPanel);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setSize(700, 400);
-//        frame.setVisible(true);
 
+        //moveElevators();
+
+
+//
+//        while(true){
+//            elevatorFrame.getPanel().repaint();
+//
+//            //The program waits a while before rerendering
+//            try {
+//                Thread.sleep(12);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+    }
+
+    public void moveElevators()
+    {
+        for(int i = 0; i < 200; ++i) {
+            System.out.println("Boo");
+            elevatorFrame.getPanel().repaint();
+
+            try
+            {
+                Thread.sleep(30);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

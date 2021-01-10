@@ -33,7 +33,7 @@ public class MainForm {
         });
 
         start.addActionListener(e -> {
-            BuildingForm buildingForm = new BuildingForm(this, MainForm.building);
+            BuildingForm buildingForm = new BuildingForm(MainForm.building);
             frame.setVisible(false);
         });
     }

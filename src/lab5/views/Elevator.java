@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.Console;
 
-public class Elevator extends JPanel {
+public class Elevator extends JPanel  {
     private int x;
     private int y;
     private int width;
@@ -29,11 +29,16 @@ public class Elevator extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         g.setColor(color);
         g.drawRect(x, y, width, height);
         int centerX = x + (int)(width / 2.0);
         int centerY = y + (int)(height / 2.0);
-        System.out.printf("x: %d, y: %d, centerX: %d, centerY: %d: ", x, y, centerX, centerY);
+        System.out.printf("x: %d, y: %d, centerX: %d, centerY: %d !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ", x, y, centerX, centerY);
         g.drawString(text, centerX, centerY);
+
+        x += 9;
+        y += 9;
     }
+
 }
