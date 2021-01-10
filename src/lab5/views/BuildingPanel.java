@@ -29,7 +29,7 @@ public class BuildingPanel extends JPanel {
 
         elevatorPanels = new ArrayList<>();
         for(int i = 0; i < building.getElevatorCount(); ++i) {
-            elevatorPanels.add(new ElevatorPanel(i * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
+            elevatorPanels.add(new ElevatorPanel(i  * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
                     String.format("%d", building.getPeopleCountInside(i) ),
                     String.format("M: %d/%d", (int)building.getElevatorMass(i), (int)building.getElevatorMaxMass(i)),
                     String.format("S: %d/%d", (int)building.getElevatorArea(i), (int)building.getElevatorMaxArea(i)),
@@ -94,8 +94,8 @@ public class BuildingPanel extends JPanel {
     }
 
     void paintWaitingLine(Graphics g, int elevatorNumber){
-        g.drawLine((elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth + margin), margin,
-                (elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth + margin), height + margin * 2 - margin) ;
+        g.drawLine((elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth) + margin, margin,
+                (elevatorNumber + 1) * (ElevatorPanel.width + waitingPlaceWidth) + margin, height + margin * 2 - margin) ;
     }
 }
 
