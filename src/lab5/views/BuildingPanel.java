@@ -2,6 +2,7 @@ package lab5.views;
 
 import lab5.Building;
 import lab5.Elevator;
+import lab5.IBuildingFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class BuildingPanel extends JPanel {
 
-    private Building building;
+    private IBuildingFacade building;
     private List<ElevatorPanel> elevatorPanels;
     private int width;
     private int height;
@@ -20,7 +21,7 @@ public class BuildingPanel extends JPanel {
     private final int waitingPlaceWidth = 50;
 
 
-    BuildingPanel(Building building)
+    BuildingPanel(IBuildingFacade building)
     {
         this.building = building;
         width = building.getElevatorCount() * (ElevatorPanel.width + waitingPlaceWidth);
