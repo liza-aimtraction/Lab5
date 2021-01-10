@@ -86,7 +86,7 @@ public class BuildingPanel extends JPanel {
     void paintPeopleOutside(Graphics g, int floorNumber, int elevatorNumber) {
         g.drawString(String.valueOf(building.getPeopleCountOutside(floorNumber, elevatorNumber)),
                 (elevatorNumber + 1) * ElevatorPanel.width + (elevatorNumber * waitingPlaceWidth) + waitingPlaceWidth / 2,
-                (building.getFloorCount() - 1 - floorNumber) * ElevatorPanel.height);
+                (building.getFloorCount() - 1 - floorNumber) * ElevatorPanel.height + ElevatorPanel.height / 2 + margin);
     }
 
     void paintWaitingLine(Graphics g, int elevatorNumber){
