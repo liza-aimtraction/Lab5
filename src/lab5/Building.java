@@ -33,11 +33,10 @@ public class Building implements IBuildingFacade {
      *      so we check if thread already running or not
      */
     public void startupBuildingThreads(){
-        timerTask.mtx.lock();
-        ArrayList<Person> personsCopy = (ArrayList<Person>)persons.clone();
-        timerTask.mtx.unlock();
-        for (Person person : personsCopy) {
-            if (person.isAlive() == false) {
+        ArrayList<Person> peopleCopy = getPeopleCopyThreadSafe();
+
+        for (Person person : peopleCopy) {
+            if (!person.isAlive()) {
                 person.start();
             }
         }
@@ -47,6 +46,30 @@ public class Building implements IBuildingFacade {
         }
 
         personGeneratorTimer.schedule(timerTask, 0, generatePersonInterval);
+    }
+
+    public void killThreads() {
+        ArrayList<Person> peopleCopy = getPeopleCopyThreadSafe();
+
+        for (Person person : peopleCopy) {
+            if (person.isAlive()) {
+                person.stop();
+            }
+        }
+
+        for (Elevator elevator : elevators) {
+            elevator.stop();
+        }
+
+        personGeneratorTimer.cancel();
+        personGeneratorTimer.purge();
+    }
+
+    private ArrayList<Person> getPeopleCopyThreadSafe() {
+        timerTask.mtx.lock();
+        ArrayList<Person> people = (ArrayList<Person>)persons.clone();
+        timerTask.mtx.unlock();
+        return people;
     }
 
     /**
