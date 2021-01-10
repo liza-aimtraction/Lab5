@@ -24,6 +24,7 @@ public class Person extends Thread {
     private Floor currentFloor;
     private ElevatorEntrance selectedEntrance;
     private Elevator enteredElevator;
+    private boolean alreadyCalledElevator;
 
     public Person(String name, double mass, double area, Floor floorSpawnedOn, int destinationFloor, Building building){
         setName(name); // thread name
@@ -62,9 +63,13 @@ public class Person extends Thread {
 
         selectEntrance();
 
+        alreadyCalledElevator = false;
+
         while (true)
         {
-            callElevatorIfCan();
+            if (!alreadyCalledElevator) {
+                callElevatorIfCan();
+            }
 
             int time = waitSomeTime();
             timeSpentInQueue += time;
@@ -102,6 +107,7 @@ public class Person extends Thread {
     private void callElevator(){
         EventLogger.log(getName() + " called elevator at floor" + currentFloor.getNumber(), getName());
         selectedEntrance.callElevator(this.currentFloor.getNumber());
+        alreadyCalledElevator = true;
     }
 
     private void enterElevator(){
@@ -145,6 +151,7 @@ public class Person extends Thread {
                 return true;
             }
             else {
+                alreadyCalledElevator = false; // so we can call elevator again
                 EventLogger.log(getName() + " is too fat to fit in the elevator!", getName());
             }
         }
