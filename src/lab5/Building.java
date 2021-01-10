@@ -209,7 +209,6 @@ public class Building implements IBuildingFacade {
     @Override
     public float getElevatorHeight(int elevatorNumber) {
         Elevator elevator = getElevator(elevatorNumber);
-        EventLogger.log("Returned height: " + elevator.getFloorHeight(), elevator.getName());
         return elevator.getFloorHeight();
     }
 
