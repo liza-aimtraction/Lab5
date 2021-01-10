@@ -18,7 +18,6 @@ public class ElevatorPanel extends JPanel  {
         this.y = y;
         this.color = color;
         this.text = text;
-        //setLayout(null);
         setSize(width, height);
     }
 
@@ -27,9 +26,7 @@ public class ElevatorPanel extends JPanel  {
         return new Dimension(width, height);
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paintElevator(Graphics g) {
         g.setColor(color);
         g.drawRect(x, y, width, height);
         int centerX = x + (int)(width / 2.0);
