@@ -4,7 +4,7 @@ public interface IBuildingFacade {
     int getFloorCount();
     int getElevatorCount();
     int getPeopleCountOutside(int floorNumber, int entranceNumber);
-    String getElevatorStrategyName(int elevatorNumber);
+    IElevatorStrategy getElevatorStrategy(int elevatorNumber);
     int getPeopleCountInside(int elevatorNumber);
     float getElevatorHeight(int elevatorNumber);
     double getElevatorMass(int elevatorNumber);

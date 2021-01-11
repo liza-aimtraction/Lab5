@@ -192,8 +192,8 @@ public class Building implements IBuildingFacade {
     }
 
     @Override
-    public String getElevatorStrategyName(int elevatorNumber) {
-        return elevators.get(elevatorNumber).getElevatorStrategy().getName();
+    public IElevatorStrategy getElevatorStrategy(int elevatorNumber) {
+        return elevators.get(elevatorNumber).getElevatorStrategy();
     }
 
     @Override

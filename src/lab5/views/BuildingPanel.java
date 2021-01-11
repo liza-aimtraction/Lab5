@@ -2,7 +2,11 @@ package lab5.views;
 
 import lab5.Building;
 import lab5.Elevator;
+import lab5.ElevatorStrategies.BasicElevatorStrategy;
+import lab5.ElevatorStrategies.PrioritizedElevatorStrategy;
+import lab5.ElevatorStrategies.RoundRobinElevatorStrategy;
 import lab5.IBuildingFacade;
+import lab5.IElevatorStrategy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +33,7 @@ public class BuildingPanel extends JPanel {
 
         elevatorPanels = new ArrayList<>();
         for(int i = 0; i < building.getElevatorCount(); ++i) {
-            elevatorPanels.add(new ElevatorPanel(i  * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategyName(i)),
+            elevatorPanels.add(new ElevatorPanel(i  * (ElevatorPanel.width + waitingPlaceWidth) + margin, height - ElevatorPanel.height, getStrategyColor(building.getElevatorStrategy(i)),
                     String.format("%d", building.getPeopleCountInside(i) ),
                     String.format("M: %d/%d", (int)building.getElevatorMass(i), (int)building.getElevatorMaxMass(i)),
                     String.format("S: %d/%d", (int)building.getElevatorArea(i), (int)building.getElevatorMaxArea(i)),
@@ -39,21 +43,20 @@ public class BuildingPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
-    public Color getStrategyColor(String strategyName) {
-        switch (strategyName)
-        {
-            case("Basic"): {
-                return Color.BLUE;
-            }
-            case("Prioritized"): {
-                return Color.YELLOW;
-            }
-            case("Round-Robin"): {
-                return Color.GREEN;
-            }
-            default:
-                return Color.BLACK;
+    public Color getStrategyColor(IElevatorStrategy strategy) {
+        if (strategy instanceof BasicElevatorStrategy) {
+            return Color.BLUE;
         }
+
+        if (strategy instanceof PrioritizedElevatorStrategy) {
+            return Color.YELLOW;
+        }
+
+        if (strategy instanceof RoundRobinElevatorStrategy) {
+            return Color.GREEN;
+        }
+
+        return Color.BLACK;
     }
 
     @Override
