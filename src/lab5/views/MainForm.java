@@ -1,14 +1,21 @@
 package lab5.views;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import lab5.*;
 import lab5.Elevator;
 import lab5.ElevatorStrategies.BasicElevatorStrategy;
 import lab5.ElevatorStrategies.OptimalElevatorStrategy;
 
+import java.awt.*;
+import java.awt.event.TextEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class MainForm {
 
@@ -35,26 +42,46 @@ public class MainForm {
         });
 
         start.addActionListener(e -> {
-            initBuilder();
+            boolean builderInitialized = initBuilder();
+            if (!builderInitialized) {
+                return;
+            }
+
             boolean isValid = builder.validate();
-            if (isValid) {
-                Building building = builder.build();
-                BuildingForm buildingForm = new BuildingForm(building);
-                frame.setVisible(false);
+            if (!isValid) {
+                showError("Some input is out of bounds");
+                return;
             }
-            else {
-                // TODO: message box about invalid input
-            }
+
+            Building building = builder.build();
+            BuildingForm buildingForm = new BuildingForm(building);
+            frame.setVisible(false);
         });
     }
 
-    // TODO: handle forms input instead of this
-    private void initBuilder() {
-        builder.setFloorCount(7);
+    private boolean initBuilder() {
+        try {
+            builder.setFloorCount(Integer.parseInt(floors.getText()));
+        }
+        catch (NumberFormatException e) {
+            showError("Invalid floor count");
+            return false;
+        }
+
+        try {
+            builder.setSpawnRate(Float.parseFloat(spawnRate.getText()));
+        }
+        catch (NumberFormatException e) {
+            showError("Invalid spawn rate");
+            return false;
+        }
+
         builder.setSpawnLimit(100);
-        builder.setSpawnRate(1);
-        builder.addElevator(new BasicElevatorStrategy(), 300, 200);
-        builder.addElevator(new OptimalElevatorStrategy(), 1000, 300);
+        return true;
+    }
+
+    private void showError(String message) {
+        showMessageDialog(null, message, "Wrong data", ERROR_MESSAGE);
     }
 
     public void addNewElevator(int selected, double maxMass, double maxVolume) {
