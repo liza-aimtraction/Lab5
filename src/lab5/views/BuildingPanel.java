@@ -45,8 +45,11 @@ public class BuildingPanel extends JPanel {
             case("Basic"): {
                 return Color.BLUE;
             }
-            case("Optimal"): {
-                return  Color.YELLOW;
+            case("Prioritized"): {
+                return Color.YELLOW;
+            }
+            case("Round-Robin"): {
+                return Color.GREEN;
             }
             default:
                 return Color.BLACK;

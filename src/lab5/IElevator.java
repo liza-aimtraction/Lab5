@@ -5,5 +5,6 @@ import java.util.List;
 public interface IElevator {
     ArrayList<Person> getPeopleInsideClonedList();
     int getNextCall();
-    Floor getCurrentFloor();
+    int getCurrentFloorNumber();
+    int getBuildingFloorCount();
 }

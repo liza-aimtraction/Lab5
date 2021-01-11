@@ -1,9 +1,12 @@
 package lab5.views;
 
+import lab5.ElevatorStrategies.BasicElevatorStrategy;
+import lab5.ElevatorStrategies.PrioritizedElevatorStrategy;
+import lab5.ElevatorStrategies.RoundRobinElevatorStrategy;
+import lab5.IElevatorStrategy;
+
 import javax.swing.*;
 import java.awt.event.WindowEvent;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static javax.swing.JOptionPane.*;
 
@@ -18,6 +21,12 @@ public class AddElevatorForm {
     private JTextField volumeInput;
     private JPanel mainPanel;
     private MainForm formRef;
+
+    private final IElevatorStrategy[] strategies = new IElevatorStrategy[] {
+            new BasicElevatorStrategy(),
+            new PrioritizedElevatorStrategy(),
+            new RoundRobinElevatorStrategy()
+    };
 
     AddElevatorForm(MainForm form) {
         formRef = form;
@@ -37,13 +46,22 @@ public class AddElevatorForm {
         cancelButton.addActionListener(e -> {
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         });
+
+        fillElevatorStrategiesComboBox();
+    }
+
+    private void fillElevatorStrategiesComboBox() {
+        for (IElevatorStrategy strategy : strategies) {
+            strategyBox.addItem(strategy.getName());
+        }
     }
 
     private void createElevator() {
-        int selected = strategyBox.getSelectedIndex();
+        int selectedIndex = strategyBox.getSelectedIndex();
+        IElevatorStrategy strategy = strategies[selectedIndex];
         double mass = Double.parseDouble(massInput.getText());
         double volume = Double.parseDouble(volumeInput.getText());
-        formRef.addNewElevator(selected, mass, volume);
+        formRef.addNewElevator(strategy, mass, volume);
     }
 
     private void showError(String message) {

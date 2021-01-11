@@ -7,7 +7,7 @@ import lab5.Person;
 
 import java.util.ArrayList;
 
-public class OptimalElevatorStrategy implements IElevatorStrategy {
+public class PrioritizedElevatorStrategy implements IElevatorStrategy {
     class PossibleTarget {
         int queuePosition;
         int targetFloor;
@@ -32,10 +32,11 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         }
     }
 
+    @Override
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator) {
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInsideClonedList();
         int nextCall = elevator.getNextCall();
-        int currentFloor = elevator.getCurrentFloor().getNumber();
+        int currentFloor = elevator.getCurrentFloorNumber();
 
         ArrayList<PossibleTarget> priorityList = createPriorityList(peopleInsideElevator, currentFloor);
 
@@ -73,9 +74,8 @@ public class OptimalElevatorStrategy implements IElevatorStrategy {
         return possibleTargets;
     }
 
-    private String name = "Optimal";
-
+    @Override
     public String getName() {
-        return name;
+        return "Prioritized";
     }
 }

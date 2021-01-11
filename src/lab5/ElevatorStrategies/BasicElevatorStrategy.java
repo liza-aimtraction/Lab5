@@ -9,25 +9,26 @@ import java.util.ArrayList;
 
 public class BasicElevatorStrategy implements IElevatorStrategy {
 
-    private String name = "Basic";
-
-    public String getName() {
-        return name;
-    }
-
+    @Override
     public ElevatorStrategyCommand CalculateNextMove(IElevator elevator){
         ArrayList<Person> peopleInsideElevator = elevator.getPeopleInsideClonedList();
         if(peopleInsideElevator.size() == 0){
             int nextCall = elevator.getNextCall();
             if(nextCall == -1) {
-                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloor().getNumber());
+                return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloorNumber());
             }
             else{
                 return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.OUTSIDE, nextCall);
             }
         }
         else{
-            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.INSIDE, peopleInsideElevator.get(0).getDestinationFloor());
+            Person firstPerson = peopleInsideElevator.get(0);
+            return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.INSIDE, firstPerson.getDestinationFloor());
         }
+    }
+
+    @Override
+    public String getName() {
+        return "Basic";
     }
 }

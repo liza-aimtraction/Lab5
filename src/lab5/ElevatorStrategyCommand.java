@@ -2,7 +2,7 @@ package lab5;
 
 public class ElevatorStrategyCommand {
     public enum TriggerSource{
-        OUTSIDE, INSIDE, NONE
+        OUTSIDE, INSIDE, NONE, CUSTOM
     }
 
     public int floorToMove;
@@ -12,5 +12,4 @@ public class ElevatorStrategyCommand {
         floorToMove = floor;
         triggerSource = source;
     }
-
 }

@@ -1,18 +1,8 @@
 package lab5.views;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import lab5.*;
-import lab5.Elevator;
-import lab5.ElevatorStrategies.BasicElevatorStrategy;
-import lab5.ElevatorStrategies.OptimalElevatorStrategy;
-
-import java.awt.*;
-import java.awt.event.TextEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -84,8 +74,7 @@ public class MainForm {
         showMessageDialog(null, message, "Wrong data", ERROR_MESSAGE);
     }
 
-    public void addNewElevator(int selected, double maxMass, double maxVolume) {
-        IElevatorStrategy strategy = (selected == 0) ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
+    public void addNewElevator(IElevatorStrategy strategy, double maxMass, double maxVolume) {
         builder.addElevator(strategy, maxMass, maxVolume);
         elevatorList.append(String.format("Created elevator. Strategy: %s; maxMass: %.2f; maxVolume: %.2f\n", strategy.getName(), maxMass, maxVolume));
     }

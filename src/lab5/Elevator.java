@@ -123,7 +123,6 @@ public class Elevator extends Thread implements IElevator {
                         , getName());
             }
 
-
             if(arrivedAtCommandFloor()){
                 OpenDoors();
                 Thread.sleep(2000);
@@ -264,6 +263,10 @@ public class Elevator extends Thread implements IElevator {
         return (float)floorNumber + floorMultiplier * progressDependingOnDirection;
     }
 
+    public Floor getCurrentFloor() {
+        return currentFloor;
+    }
+
     @Override
     public ArrayList<Person> getPeopleInsideClonedList(){
         peopleMutex.lock();
@@ -284,9 +287,13 @@ public class Elevator extends Thread implements IElevator {
         return (callQueue.size() > 0) ? callQueue.peek() : -1;
     }
 
-    // For Strategy
     @Override
-    public Floor getCurrentFloor() {
-        return currentFloor;
+    public int getCurrentFloorNumber() {
+        return getCurrentFloor().getNumber();
+    }
+
+    @Override
+    public int getBuildingFloorCount() {
+        return building.getFloorCount();
     }
 }
