@@ -53,6 +53,7 @@ public class BuildingBuilder {
         String name = "Elevator" + elevatorsToAdd.size();
         int startingFloor = 0;
         ElevatorCreationData data = new ElevatorCreationData(name, strategy, maxMass, maxArea, startingFloor);
+        elevatorsToAdd.add(data);
     }
 
     public boolean validate() {

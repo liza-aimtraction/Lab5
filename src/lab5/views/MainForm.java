@@ -35,6 +35,7 @@ public class MainForm {
         });
 
         start.addActionListener(e -> {
+            initBuilder();
             boolean isValid = builder.validate();
             if (isValid) {
                 Building building = builder.build();
@@ -47,18 +48,19 @@ public class MainForm {
         });
     }
 
-    public void addNewElevator(int selected, double maxMass, double maxVolume) {
-        IElevatorStrategy strategy = (selected == 0) ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
-        lab5.Elevator elevator = building.createElevator(strategy, building.getFloor(0), maxMass, maxVolume);
-        elevatorList.append(String.format("%s Strategy: %s; maxMass: %.2f; maxVolume: %.2f\n", elevator.getName(), strategy.getName(), maxMass, maxVolume));
+    // TODO: handle forms input instead of this
+    private void initBuilder() {
+        builder.setFloorCount(7);
+        builder.setSpawnLimit(100);
+        builder.setSpawnRate(1);
+        builder.addElevator(new BasicElevatorStrategy(), 300, 200);
+        builder.addElevator(new OptimalElevatorStrategy(), 1000, 300);
     }
 
-    /**
-     * method will be deleted in future.
-     */
-    public static void initBuilding(){
-        MainForm.building = new Building();
-        building.setupPersonGenerator(500, 50);
+    public void addNewElevator(int selected, double maxMass, double maxVolume) {
+        IElevatorStrategy strategy = (selected == 0) ? new BasicElevatorStrategy() : (IElevatorStrategy) new OptimalElevatorStrategy();
+        builder.addElevator(strategy, maxMass, maxVolume);
+        elevatorList.append(String.format("Created elevator. Strategy: %s; maxMass: %.2f; maxVolume: %.2f\n", strategy.getName(), maxMass, maxVolume));
     }
 
     private static void buildAndDisplayUI(){
@@ -69,7 +71,5 @@ public class MainForm {
         EventLogger.InitEventLogger("log.txt");
 
         buildAndDisplayUI();
-
-        initBuilding();
     }
 }
