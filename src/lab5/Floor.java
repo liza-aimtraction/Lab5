@@ -16,6 +16,10 @@ public class Floor {
         this.entrances.add(entrance);
     }
 
+    public void removeEntrance(ElevatorEntrance entrance) {
+        this.entrances.remove(entrance);
+    }
+
     public ElevatorEntrance addPersonToEntranceWithShortestQueue(Person person) {
         ElevatorEntrance shortest = null;
         int shortestQueueSize = 9999;

@@ -1,6 +1,7 @@
 package lab5;
 
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.Timer;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Timer;
  *
  */
 public class Building implements IBuildingFacade {
-    private ArrayList<Floor> floors;
+    private Stack<Floor> floors;
     private ArrayList<Elevator> elevators;
     private ArrayList<Person> persons;
     private Timer personGeneratorTimer;
@@ -21,7 +22,7 @@ public class Building implements IBuildingFacade {
     private int generatePersonInterval;
 
     public Building() {
-        floors = new ArrayList<Floor>();
+        floors = new Stack<Floor>();
         elevators = new ArrayList<Elevator>();
         persons = new ArrayList<Person>();
     }
@@ -117,38 +118,33 @@ public class Building implements IBuildingFacade {
         }
     }
 
-    public void createFloors(int numberOfFloors){
-        for(int i = 0; i < numberOfFloors; ++i){
-            floors.add(new Floor(i));
-        }
+    public Floor addFloor() {
+        int floorNumber = getFloorCount();
+        Floor floor = new Floor(floorNumber);
+        floors.add(floor);
+        return floor;
     }
 
-    public Elevator createElevator(IElevatorStrategy elevatorStrategy, Floor startingFloor, double maxMass, double maxVolume){
-        if(startingFloor.getNumber() < 0 || startingFloor.getNumber() >= floors.size()){
-            throw new Error("createElevator: Invalid floor passed");
-        }
-        else {
-            Elevator elevator = new Elevator("Elevator" + elevators.size(), elevatorStrategy, startingFloor, this, maxMass, maxVolume);
-            elevators.add(elevator);
-            createEntrancesForElevatorOnEveryFloor(elevator);
-            return elevators.get(elevators.size() - 1);
-        }
+    public void removeTopFloor() {
+        floors.pop();
     }
 
-    private void createEntrancesForElevatorOnEveryFloor(Elevator elevator) {
-        for (int floorNumber = 0; floorNumber < floors.size(); ++floorNumber) {
-            Floor floor = getFloor(floorNumber);
+    public void addElevator(Elevator elevator){
+        elevators.add(elevator);
+    }
 
-            // is it stupid? Perhaps returning null if entrance doesn't exist instead of throwing error would be better
-            try {
-                floor.getElevatorEntranceByElevator(elevator);
-                EventLogger.log("Tried to create already existing elevator entrance: " + elevator.getName() + " floor = " + floorNumber, elevator.getName());
-            }
-            catch (Error e) {
-                ElevatorEntrance entrance = new ElevatorEntrance(elevator);
-                floor.addEntrance(entrance);
-            }
-        }
+    public void removeElevator(Elevator elevator) {
+        elevators.remove(elevator);
+    }
+
+    public void addEntrance(int floorNumber, ElevatorEntrance entrance){
+        Floor floor = getFloor(floorNumber);
+        floor.addEntrance(entrance);
+    }
+
+    public void removeEntrance(int floorNumber, ElevatorEntrance entrance) {
+        Floor floor = getFloor(floorNumber);
+        floor.removeEntrance(entrance);
     }
 
     public void addPerson(Person person){

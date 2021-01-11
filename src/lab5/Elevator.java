@@ -61,16 +61,19 @@ public class Elevator extends Thread implements IElevator {
      */
     public final float MOVE_SPEED = 0.75f;
 
-    public Elevator(String logName, IElevatorStrategy strategy, Floor startingFloor, Building building, double maxMass, double maxArea){
-        setName(logName); // thread name
-        this.elevatorStrategy = strategy;
+    public Elevator(String name, Building building, Floor startingFloor, IElevatorStrategy strategy, double maxMass, double maxArea){
+        setName(name); // thread name
+
         this.peopleInside = new ArrayList<Person>();
         this.callQueue = new ConcurrentLinkedQueue<Integer>();
-        this.currentFloor = startingFloor;
+        this.peopleMutex = new Mutex();
+
         this.building = building;
+        this.currentFloor = startingFloor;
+        this.elevatorStrategy = strategy;
         this.maxMass = maxMass;
         this.maxArea = maxArea;
-        this.peopleMutex = new Mutex();
+
         EventLogger.log(getName() + " created ", getName());
     }
 

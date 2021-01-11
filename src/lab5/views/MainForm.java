@@ -19,9 +19,11 @@ public class MainForm {
     private JTextArea elevatorList;
     private JTextField spawnRate;
 
-    private static Building building;
+    private BuildingBuilder builder;
 
     public MainForm() {
+        builder = new BuildingBuilder();
+
         JFrame frame = new JFrame("MainForm");
         frame.setContentPane(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,8 +35,15 @@ public class MainForm {
         });
 
         start.addActionListener(e -> {
-            BuildingForm buildingForm = new BuildingForm(MainForm.building);
-            frame.setVisible(false);
+            boolean isValid = builder.validate();
+            if (isValid) {
+                Building building = builder.build();
+                BuildingForm buildingForm = new BuildingForm(building);
+                frame.setVisible(false);
+            }
+            else {
+                // TODO: message box about invalid input
+            }
         });
     }
 
@@ -49,17 +58,8 @@ public class MainForm {
      */
     public static void initBuilding(){
         MainForm.building = new Building();
-        building.createFloors(7);
-        building.createElevator(new BasicElevatorStrategy(), building.getFloor(0), 500, 500);
-        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0), 500, 500);
-        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0), 200, 200);
-        building.createElevator(new OptimalElevatorStrategy(), building.getFloor(0), 400, 300);
-        building.addPerson(new Person("ManuallyCreatedPerson1", 60, 0.5, building.getFloor(0), 1, building));
-        building.addPerson(new Person("ManuallyCreatedPerson2", 60, 0.5, building.getFloor(1), 0, building));
-        building.addPerson(new Person("ManuallyCreatedPerson3", 60, 0.5, building.getFloor(2), 1, building));
         building.setupPersonGenerator(500, 50);
     }
-
 
     private static void buildAndDisplayUI(){
         new MainForm();
