@@ -48,7 +48,7 @@ public class RoundRobinElevatorStrategy implements IElevatorStrategy {
             return new ElevatorStrategyCommand(source, targetFloor);
         }
 
-        return new ElevatorStrategyCommand(ElevatorStrategyCommand.TriggerSource.NONE, elevator.getCurrentFloorNumber());
+        return new ElevatorStrategyCommand(source, currentFloor);
     }
 
     @Override
