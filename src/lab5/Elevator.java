@@ -93,15 +93,10 @@ public class Elevator extends Thread implements IElevator {
     }
 
     public void changeFloor(Floor floorToChange){
-        if(floorToChange.getNumber() == currentFloor.getNumber() - 1 || floorToChange.getNumber() == currentFloor.getNumber() + 1){
-            currentFloor = floorToChange;
-            progressTo = 0;
-            movingDirection = Direction.IDLE;
-            EventLogger.log(getName() + " changed floor to: " + currentFloor.getNumber(), getName());
-        }
-        else{
-            throw new Error("ERROR: changeFloor : " + currentFloor + " --> " + floorToChange + ". Diff is not 1!");
-        }
+        currentFloor = floorToChange;
+        progressTo = 0;
+        movingDirection = Direction.IDLE;
+        EventLogger.log(getName() + " changed floor to: " + currentFloor.getNumber(), getName());
     }
 
     /**
@@ -188,25 +183,26 @@ public class Elevator extends Thread implements IElevator {
     }
 
     private void simulateMovementToFloor(){
-        movingDirection =
-                currentCommand.floorToMove > currentFloor.getNumber()
-                        ? Direction.UP
-                        : Direction.DOWN;
+        int floorNumber = currentFloor.getNumber();
+        int floorToMoveNumber = currentCommand.floorToMove;
 
-        int iterations = 20;
+        movingDirection =
+                (floorToMoveNumber > floorNumber) ? Direction.UP :
+                        (floorToMoveNumber < floorNumber) ? Direction.DOWN :
+                                Direction.IDLE;
+
+        int floorDifference = Math.abs(floorToMoveNumber - floorNumber);
+        int iterationsPerFloor = 20;
+        int iterations = iterationsPerFloor * floorDifference;
         float timeToMove = 1000.0f / MOVE_SPEED;
-        int millisecondsToWait = (int)(timeToMove / iterations);
+        int millisecondsToWait = (int)(timeToMove / iterationsPerFloor);
 
         for(int i = 1; i <= iterations; i++) {
             progressTo = (float)i / iterations;
             waitForProgressIncrement(millisecondsToWait);
         }
-        if(movingDirection == Direction.DOWN){
-            changeFloor(building.getLowerFloor(currentFloor));
-        }
-        else if(movingDirection == Direction.UP){
-            changeFloor(building.getUpperFloor(currentFloor));
-        }
+        Floor newFloor = building.getFloor(floorToMoveNumber);
+        changeFloor(newFloor);
     }
 
     public void addPerson(Person person){
@@ -253,13 +249,19 @@ public class Elevator extends Thread implements IElevator {
     }
 
     public float getFloorHeight() {
+        float floorMultiplier = 0;
+        if (currentCommand != null)
+        {
+            floorMultiplier = Math.abs(currentCommand.floorToMove - currentFloor.getNumber());
+        }
+
         float progressDependingOnDirection =
                 (getMovingDirection() == Direction.UP) ? progressTo :
                         (getMovingDirection() == Direction.DOWN) ? -progressTo :
                                 0;
 
         float floorNumber = getCurrentFloor().getNumber();
-        return (float)floorNumber + progressDependingOnDirection;
+        return (float)floorNumber + floorMultiplier * progressDependingOnDirection;
     }
 
     @Override
