@@ -7,9 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Math.abs;
 
-/**
- * @author Oikawa, lexa
- */
+
 public class Elevator extends Thread implements IElevator {
 
     private Building building;

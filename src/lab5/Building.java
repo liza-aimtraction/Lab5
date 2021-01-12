@@ -5,8 +5,6 @@ import java.util.Stack;
 import java.util.Timer;
 
 /**
- * @author Oikawa
- *
  * Contains all persons and elevator threads
  *
  * Generates specified number of persons with some interval

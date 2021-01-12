@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 /**
  *    Timer for person generator
  *    Used in lab5.Building
- *    @author  Oikawa
  * */
 public class PersonGenerator extends TimerTask {
 

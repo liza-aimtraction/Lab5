@@ -11,7 +11,6 @@ import java.util.Map;
 
 /**
  *
- * @author Oikawa
  * @param {boolean} alsoLogToConsole - set it manually to also log to console
  */
 public class EventLogger {

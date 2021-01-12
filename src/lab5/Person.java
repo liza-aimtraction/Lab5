@@ -3,7 +3,6 @@ package lab5;
 import java.util.Random;
 
 /**
- * @author Oikawa, lexa
  *
  *  Extends Thread, so hve methods start(), join(), isAlive() ...
  *
